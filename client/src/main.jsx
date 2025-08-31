@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import BookPage from './pages/BookPage';
 import AboutUs from './pages/AboutUs';
+import './index.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
