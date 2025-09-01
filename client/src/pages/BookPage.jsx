@@ -169,6 +169,42 @@ const BookPage = () => {
           </div>
         </div>
       </div>
+      <div id="book-authors" className='bg-gray-200'>
+        <div className="p-10">
+          <h2 className="text-3xl text-center">Author</h2>
+          <div className="">
+            {book.Author.map((a) => {
+              return (
+                <div className="py-2 text-center">
+                  <span className="text-2xl">{a.Author_Name}</span>
+                  <p>{a.Author_Introduction}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="p-10">
+        <h2 className='text-3xl text-center pb-5'>Reviews</h2>
+        <div className='grid grid-cols-2 gap-2'>
+
+        {book.reviews.map((r) => {
+          return (
+            <div className="py-5 shadow-md text-center">
+              <span className="text-2xl">{r.ReviewerName}</span>
+              <div className='pl-2 text-sm'>{"("}{r.Review_Date}{")"}</div>
+              <p>{r.Review_Text}</p>
+              <div>
+                <span className='pr-2'>{r.Rating}</span>
+                <span>{[...Array(5)].map((_, i) => (i < r.Rating ? '\u2605' : '\u2606'))}</span>
+              </div>
+            </div>
+          );
+        })}
+        </div>
+        </div>
+      </div>
     </>
   );
 };
