@@ -1,12 +1,20 @@
 import React from 'react';
 import bookImage from '../assets/bookPage/harryPotter2.jpg';
+import authorImage from '../assets/bookPage/jk-rowling.jpg';
+
 const BookPage = () => {
   const book = {
     title: 'Harry Potter and the Chamber of Secrets',
     Author: [
       {
         Author_Name: 'J.K. Rowling',
-        Author_Image: 'https://upload.wikimedia.org/wikipedia/commons/3/39/J._K._Rowling_2010.jpg',
+        Author_Image: authorImage,
+        Author_Introduction:
+          'Joanne Rowling CH, OBE, HonFRSE, FRCPE, FRSL, better known by her pen name J.K. Rowling, is a British author, screenwriter, and philanthropist best known for writing the Harry Potter fantasy series. The books have gained worldwide attention, won numerous awards, and sold more than 500 million copies. Rowling has also written several companion books to the series, including "Fantastic Beasts and Where to Find Them" and "The Tales of Beedle the Bard".',
+      },
+      {
+        Author_Name: 'J.K. Rowling',
+        Author_Image: authorImage,
         Author_Introduction:
           'Joanne Rowling CH, OBE, HonFRSE, FRCPE, FRSL, better known by her pen name J.K. Rowling, is a British author, screenwriter, and philanthropist best known for writing the Harry Potter fantasy series. The books have gained worldwide attention, won numerous awards, and sold more than 500 million copies. Rowling has also written several companion books to the series, including "Fantastic Beasts and Where to Find Them" and "The Tales of Beedle the Bard".',
       },
@@ -169,15 +177,24 @@ const BookPage = () => {
           </div>
         </div>
       </div>
-      <div id="book-authors" className='bg-gray-200'>
+      <div id="book-authors" className="bg-gray-200">
         <div className="p-10">
-          <h2 className="text-3xl text-center">Author</h2>
+          <h2 className="text-3xl text-center pb-5">Author</h2>
           <div className="">
             {book.Author.map((a) => {
               return (
-                <div className="py-2 text-center">
-                  <span className="text-2xl">{a.Author_Name}</span>
-                  <p>{a.Author_Introduction}</p>
+                <div className="py-5 grid grid-flow-col gap-10 items-center max-w-4xl mx-auto">
+                  <div>
+                    <img
+                      src={a.Author_Image}
+                      alt={a.Author_Name}
+                      className="h-40 w-40 object-cover rounded-full shadow-lg" 
+                    />
+                  </div>
+                  <div className="grid gap-5">
+                    <span className="text-2xl">{a.Author_Name}</span>
+                    <p>{a.Author_Introduction}</p>
+                  </div>
                 </div>
               );
             })}
@@ -186,23 +203,32 @@ const BookPage = () => {
       </div>
       <div>
         <div className="p-10">
-        <h2 className='text-3xl text-center pb-5'>Reviews</h2>
-        <div className='grid grid-cols-2 gap-2'>
+          <h2 className="text-3xl text-center pb-5">Reviews</h2>
+          <div className="grid grid-cols-3 gap-2">
+            {book.reviews.map((r, idx) => (
+              <div
+                key={idx}
+                className="p-6 my-4 rounded-2xl shadow-md bg-white text-center hover:shadow-lg transition"
+              >
+                {/* Reviewer Info */}
+                <div className="mb-3">
+                  <span className="text-xl font-semibold">{r.ReviewerName}</span>
+                  <span className="block text-gray-500 text-sm">({r.Review_Date})</span>
+                </div>
 
-        {book.reviews.map((r) => {
-          return (
-            <div className="py-5 shadow-md text-center">
-              <span className="text-2xl">{r.ReviewerName}</span>
-              <div className='pl-2 text-sm'>{"("}{r.Review_Date}{")"}</div>
-              <p>{r.Review_Text}</p>
-              <div>
-                <span className='pr-2'>{r.Rating}</span>
-                <span>{[...Array(5)].map((_, i) => (i < r.Rating ? '\u2605' : '\u2606'))}</span>
+                {/* Review Text */}
+                <p className="text-gray-700 italic mb-4">{r.Review_Text}</p>
+
+                {/* Rating */}
+                <div className="flex items-center justify-center gap-1 text-yellow-500 text-lg">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>{i < r.Rating ? '★' : '☆'}</span>
+                  ))}
+                  <span className="ml-2 text-gray-600 text-sm">({r.Rating}/5)</span>
+                </div>
               </div>
-            </div>
-          );
-        })}
-        </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
