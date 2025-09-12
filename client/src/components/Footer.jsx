@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Github, Instagram, Linkedin } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <div className=" bottom-0 w-full">
+    <div className="bottom-0 w-full">
       <footer className="bg-gradient-to-r from-slate-900 via-gray-900 to-slate-900 text-gray-300 py-12 relative overflow-hidden">
         {/* Subtle Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/10 via-indigo-950/10 to-slate-950/10"></div>

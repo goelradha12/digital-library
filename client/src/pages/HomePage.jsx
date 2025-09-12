@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router';
-// import './HomePage.css';
+import '../styles/HomePage.css';
 
 const HomePage = () => {
 
