@@ -1,10 +1,11 @@
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useNavigate } from 'react-router-dom';
-import './HomePage.css';
+import { useNavigate } from 'react-router';
+// import './HomePage.css';
 
 const HomePage = () => {
+
   const navigate = useNavigate();
 
   const handleStart = () => {
@@ -15,7 +16,7 @@ const HomePage = () => {
     <Header />
 
     <div className="home-container">
-      <h1 className="welcome-text">Welcome to Digital Library</h1>
+      <h1 className="welcome-text text-5xl">Welcome to Digital Library</h1>
       <button className="start-button" onClick={handleStart}>
         Start Exploring
       </button>
