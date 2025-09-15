@@ -4,14 +4,17 @@ import BookCard from '../components/BookCard';
 import Footer from '../components/Footer';
 import books from '../components/Data.js';
 import BookCarousel from '../components/BookCarousel';
+import NavBar from '../components/NavBar.jsx'
 
 const HomePage = () => {
   return (
     <div>
       <Header />
       <h1>Home Page</h1>
-     
-      <BookCarousel books={books}/>
+      <div>
+         <NavBar />
+      </div>
+          <BookCarousel books={books} />
       <Footer />
     </div>
   );
