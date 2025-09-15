@@ -51,16 +51,21 @@ export default function CarouselSection({ books }) {
   };
 
   return (
+     <div className="flex-grow flex items-center justify-center px-6 py-16 bg-gradient-to-b from-gray-900 via-gray-950 to-black">
+        <div className="max-w-6xl w-full bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl p-10 border border-white/10">
+
     <div className="bg-gradient-to-b from-gray-900 via-gray-950 to-black py-14">
       <div className="max-w-7xl mx-auto px-4">
         <Slider {...settings}>
           {books.map((book, index) => (
             <div key={index} className="px-3">
-              <BookCard book={books} />
+              <BookCard book={book} />
             </div>
           ))}
         </Slider>
       </div>
+    </div>
+    </div>
     </div>
   );
 }
