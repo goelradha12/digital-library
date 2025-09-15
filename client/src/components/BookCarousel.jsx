@@ -56,7 +56,7 @@ export default function CarouselSection({ books }) {
         <Slider {...settings}>
           {books.map((book, index) => (
             <div key={index} className="px-3">
-              <BookCard book={book} />
+              <BookCard book={books} />
             </div>
           ))}
         </Slider>
