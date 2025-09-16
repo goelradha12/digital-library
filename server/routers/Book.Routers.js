@@ -98,14 +98,13 @@ LEFT JOIN
 WHERE
   b.Book_ID = "${bookID}"
 GROUP BY
-  b.Book_ID
-LIMIT 10;`;
+  b.Book_ID;`;
   try {
     const [result, field] = await conn.query(query);
     if (result.length === 0) {
       res.status(404).send("Book not found");
     }
-    console.log(result, field);
+    console.log(result);
     res.send(result);
   } catch (error) {
     console.error(error);

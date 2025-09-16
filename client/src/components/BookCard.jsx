@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router';
+
 export default function BookCard({ book }) {
+  const navigate = useNavigate();
   return (
     <div className="h-80 w-64 bg-white/20 backdrop-blur-md rounded-2xl shadow-xl transform transition hover:scale-105 hover:shadow-2xl mx-auto border border-white/20">
       <div className="flex flex-col items-center text-center h-full">
@@ -32,6 +35,7 @@ export default function BookCard({ book }) {
           >
             {book.Authors}
           </p>
+          <button onClick={() => navigate(`/books/${book.Book_ID}`)}>Know More</button>
         </div>
       </div>
     </div>

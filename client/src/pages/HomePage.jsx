@@ -5,32 +5,32 @@ import { useNavigate } from 'react-router';
 import '../styles/HomePage.css';
 
 const HomePage = () => {
-
   const navigate = useNavigate();
 
   const handleStart = () => {
     navigate('/books'); // Navigate to books page when clicked
   };
 
-  return (<>
-    <Header />
+  return (
+    <>
+      <Header />
 
-    <div className="home-container">
-      <h1 className="welcome-text text-5xl">Welcome to Digital Library</h1>
-      <button className="start-button" onClick={handleStart}>
-        Start Exploring
-      </button>
+      <div className="home-container">
+        <h1 className="welcome-text text-5xl">Welcome to Digital Library</h1>
+        <button className="start-button" onClick={handleStart}>
+          Start Exploring
+        </button>
 
-      {/* Decorative Elements */}
-      <div className="decoration book book1" />
-      <div className="decoration book book2" />
-      <div className="decoration book book3" />
-      <div className="decoration lamp lamp1" />
-      <div className="decoration lamp lamp2" />
-      <div className="decoration table table1" />
-    </div>
-    <Footer />
-  </>
+        {/* Decorative Elements */}
+        <div className="decoration book book1" />
+        <div className="decoration book book2" />
+        <div className="decoration book book3" />
+        <div className="decoration lamp lamp1" />
+        <div className="decoration lamp lamp2" />
+        <div className="decoration table table1" />
+      </div>
+      <Footer />
+    </>
   );
 };
 
