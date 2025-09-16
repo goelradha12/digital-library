@@ -55,12 +55,15 @@ const HomePage = () => {
         </h1>
         
         {/* Start Button */}
+      
+
         <button 
           className="px-10 py-4 text-xl bg-rose-500 text-white border-none rounded-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-rose-500/50 hover:shadow-2xl animate-pulse-custom mt-8 font-semibold"
-          onClick={handleStart}
-        >
+          onClick={() => window.location.href = "/signup"}
+          >
           Start Exploring
         </button>
+      
 
         {/* Decorative Elements */}
         {/* Books */}
