@@ -6,7 +6,7 @@ const AboutUs = () => {
     <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200 min-h-screen py-12 px-6">
       {/* Hero Section */}
       <header className="text-center mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-transparent  bg-gradient-to-r from-blue-500 via-purple-500 to-purple-900 bg-clip-text">
+        <h1 className="text-3xl md:text-4xl font-bold text-transparent  bg-gradient-to-r from-blue-500 via-purple-00 to-purple-900 bg-clip-text">
           Digital Library Management System
         </h1>
         <p className="mt-4 text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
