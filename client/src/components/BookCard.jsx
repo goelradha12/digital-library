@@ -6,7 +6,7 @@ export default function BookCard({ book }) {
         <div
           className="h-60 w-full bg-cover bg-center rounded-t-2xl"
           style={{ backgroundImage: `url(${book.image})` }}
-          title={book.title}
+        title={book.title}
         />
 
  <div className="flex flex-col justify-center flex-grow p-3">
