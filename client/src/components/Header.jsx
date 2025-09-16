@@ -1,11 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Show header when at top of page
+      if (currentScrollY < 10) {
+        setIsVisible(true);
+      }
+      // Hide header when scrolling down, show when scrolling up
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-md fixed top-0 w-full z-50">
+    <div className="top-0 w-full">
+    <header className={`bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-md fixed top-0 w-full z-50 transition-transform duration-300 ${
+      isVisible ? 'transform translate-y-0' : 'transform -translate-y-full'
+    }`}>
       {/* Animated Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-purple-800/20 to-pink-700/20 animate-[gradientMove_8s_linear_infinite]"></div>
 
@@ -29,7 +57,7 @@ const Header = () => {
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-purple-900 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a href="#categories" className="relative group">
-              <span className="text-gray-300 hover:text-gray-00 transition-colors duration-300">Categories</span>
+              <span className="text-gray-300 hover:text-gray-300 transition-colors duration-300">Categories</span>
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-purple-900 transition-all duration-300 group-hover:w-full"></span>
             </a>
           </nav>
@@ -71,6 +99,7 @@ const Header = () => {
         </div>
       )}
     </header>
+    </div>
   );
 };
 
