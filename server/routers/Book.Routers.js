@@ -1,6 +1,6 @@
-import { Router } from 'express'
-const router = Router()
-import pool from '../db.js';
+import { Router } from "express";
+const router = Router();
+import pool from "../db.js";
 
 // For pool initialization, see above
 const conn = await pool.getConnection();
@@ -44,24 +44,24 @@ GROUP BY
 LIMIT 10;`;
 
 // Get 10 books
-router.get(('/'), async (req, res) => {
-    try {
-        const [result, field] = await conn.query(myQuery);
-        console.log(result, field);
-        res.send(result);
-    } catch (error) {
-        res.status(500).send('Internal Server Error');
-    }
-})
+router.get("/", async (req, res) => {
+  try {
+    const [result, field] = await conn.query(myQuery);
+    console.log(result, field);
+    res.send(result);
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 // Get a book by it's ID
-router.get('/:id', async (req, res) => {
-    const bookID = req.params.id;
-    if (!bookID) {
-        res.status(400).send("Book ID is required");
-        return;
-    }
-    const query = `SELECT
+router.get("/:id", async (req, res) => {
+  const bookID = req.params.id;
+  if (!bookID) {
+    res.status(400).send("Book ID is required");
+    return;
+  }
+  const query = `SELECT
     b.Book_ID,
   b.Title,
   b.ISBN_No,
@@ -101,18 +101,18 @@ WHERE
 GROUP BY
   b.Book_ID
 LIMIT 10;`;
-    try {
-        const [result, field] = await conn.query(query);
-        if (result.length === 0) {
-            res.status(404).send('Book not found');
-        }
-        console.log(result, field);
-        res.send(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+  try {
+    const [result, field] = await conn.query(query);
+    if (result.length === 0) {
+      res.status(404).send("Book not found");
     }
-})
+    console.log(result, field);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 // Release the connection when finished!
 pool.releaseConnection(conn);
