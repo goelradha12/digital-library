@@ -1,32 +1,32 @@
 const books = [
   {
-    title: "Harry Potter",
-    author: "J.K. Rowling",
-    genre: "Fantasy novel",
+    Title: "Harry Potter",
+    Authors: "J.K. Rowling",
+    Categories: "Fantasy novel",
     image: "https://covers.openlibrary.org/b/id/7984916-L.jpg", // Harry Potter
   },
   {
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    genre: "Inspirational story",
+    Title: "The Alchemist",
+    Authors: "Paulo Coelho",
+    Categories: "Inspirational story",
     image: "https://covers.openlibrary.org/b/id/8775272-L.jpg", // The Alchemist
   },
   {
-    title: "Atomic Habits",
-    author: "James Clear",
-    genre: "Self improvement",
+    Title: "Atomic Habits",
+    Authors: "James Clear",
+    Categories: "Self improvement",
     image: "https://covers.openlibrary.org/b/id/9259256-L.jpg", // Atomic Habits
   },
   {
-    title: "Rich Dad Poor Dad",
-    author: "Robert Kiyosaki",
-    genre: "Finance",
+    Title: "Rich Dad Poor Dad",
+    Authors: "Robert Kiyosaki",
+    Categories: "Finance",
     image: "https://covers.openlibrary.org/b/id/240726-L.jpg", // Rich Dad Poor Dad
   },
   {
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
-    genre: "Adventure",
+    Title: "The Hobbit",
+    Authors: "J.R.R. Tolkien",
+    Categories: "Adventure",
     image: "https://covers.openlibrary.org/b/id/6979861-L.jpg", // The Hobbit
   },
 ];

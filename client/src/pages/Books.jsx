@@ -18,37 +18,21 @@ const Books = () => {
         console.log(err);
       });
   }, [setBooks]);
-  return <>
-  {books.length?<><div className='grid grid-cols-4'>
-    
-  {books.map((book)=>{
-    return (
-      <div className='border grid p-10 m-10'>
-        <div>{book.Title}</div>
-        <div>{book.ISBN_No}</div>
-        <div>{book.ISSN_No}</div>
-        <div>{book.Publication_Year}</div>
-        <div>{book.Cover_Image}</div>
-        <div>{book.No_of_Pages}</div>
-        <div>{book.Book_Summary}</div>
-        <div>{book.Language}</div>
-        <div>{book.Accession_No}</div>
-        <div>{book.Series_ID}</div>
-        <div>{book.Series_Name}</div>
-        <div>{book.Series_Description}</div>
-        <div>{book.Publisher_ID}</div>
-        <div>{book.Publisher_Name}</div>
-      </div>
-    );
-  })}
-  
-  </div>
-  </>
-  :
-  <>
-  <BookCarousel books={mybooks}/>
-  </>}
-  </>;
+  return (
+    <>
+      {books.length ? (
+        <>
+          <div>
+            <BookCarousel books={books} />
+          </div>
+        </>
+      ) : (
+        <>
+          <BookCarousel books={mybooks} />
+        </>
+      )}
+    </>
+  );
 };
 
 export default Books;

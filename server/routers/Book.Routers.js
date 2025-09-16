@@ -40,10 +40,9 @@ LEFT JOIN
 LEFT JOIN
   Category AS c ON btc.Category_ID = c.Category_ID
 GROUP BY
-  b.Book_ID
-LIMIT 10;`;
+  b.Book_ID;`;
 
-// Get 10 books
+// Get all books
 router.get("/", async (req, res) => {
   try {
     const [result, field] = await conn.query(myQuery);
