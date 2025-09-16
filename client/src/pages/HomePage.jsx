@@ -1,6 +1,5 @@
 import React from 'react';
 import Header from '../components/Header';
-import BookCard from '../components/BookCard';
 import Footer from '../components/Footer';
 
 const HomePage = () => {
@@ -8,7 +7,7 @@ const HomePage = () => {
     <div>
       <Header />
       <h1>Home Page</h1>
-      <BookCard />
+
       <Footer />
     </div>
   );
