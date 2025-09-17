@@ -2,41 +2,46 @@ import { useNavigate } from 'react-router';
 
 export default function BookCard({ book }) {
   const navigate = useNavigate();
-  return (
-    <div className="h-80 w-64 bg-white/20 backdrop-blur-md rounded-2xl shadow-xl transform transition hover:scale-105 hover:shadow-2xl mx-auto border border-white/20">
-      <div className="flex flex-col items-center text-center h-full">
-        <div
-          className="h-60 w-full bg-cover bg-center rounded-t-2xl"
-          style={{ backgroundImage: `url(${book.image})` }}
-          title={book.Title}
-        />
 
-        <div className="flex flex-col justify-center flex-grow p-3">
-          <h3
-            className="font-bold text-xl drop-shadow-md truncate 
-               bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 
-               bg-clip-text text-transparent"
-          >
+  return (
+    <div
+      className="w-64 h-96 bg-gray-900 rounded-2xl shadow-md 
+                 hover:shadow-xl transition-transform transform 
+                 hover:-translate-y-2 overflow-hidden 
+                 border border-gray-700 flex flex-col"
+    >
+      {/* Cover */}
+      <div
+        className="h-2/3 w-full bg-cover bg-center"
+        style={{
+          backgroundImage: `url(/unzipped_books/${book.Book_ID}.jpg)`,
+        }}
+        title={book.Title}
+      />
+
+      {/* Info */}
+      <div className="flex flex-col flex-grow justify-between p-4 text-center">
+        <div>
+          <h3 className="font-semibold text-lg text-white truncate">
             {book.Title}
           </h3>
-
-          <p
-            className="text-sm italic 
-                bg-gradient-to-r from-purple-300 to-pink-400 
-                bg-clip-text text-transparent drop-shadow-sm"
-          >
+          <p className="text-sm text-purple-300 italic truncate">
             {book.Categories}
           </p>
-
-          <p
-            className="font-medium mt-1 
-                bg-gradient-to-r from-yellow-300 to-orange-400 
-                bg-clip-text text-transparent drop-shadow-sm"
-          >
+          <p className="text-sm font-medium text-gray-300 mt-1 truncate">
             {book.Authors}
           </p>
-          <button onClick={() => navigate(`/books/${book.Book_ID}`)}>Know More</button>
         </div>
+
+        <button
+          onClick={() => navigate(`/books/${book.Book_ID}`)}
+          className="mt-3 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 
+                     hover:from-cyan-600 hover:to-blue-700 
+                     text-white text-sm font-medium rounded-lg shadow 
+                     transition-colors"
+        >
+          Know More
+        </button>
       </div>
     </div>
   );

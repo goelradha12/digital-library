@@ -9,11 +9,11 @@ function NextArrow(props) {
   return (
     <button
       onClick={onClick}
-      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 
-                 bg-white/10 backdrop-blur-md text-white p-3 rounded-full 
-                 shadow-lg hover:bg-cyan-400/80 hover:text-black transition"
+      className="absolute right-2 top-1/2 -translate-y-1/2 z-10 
+                 bg-black/60 text-white p-3 rounded-full 
+                 shadow-lg hover:bg-cyan-500 hover:text-black transition"
     >
-      <ChevronRight size={24} />
+      <ChevronRight size={28} />
     </button>
   );
 }
@@ -23,11 +23,11 @@ function PrevArrow(props) {
   return (
     <button
       onClick={onClick}
-      className="absolute left-4 top-1/2 -translate-y-1/2 z-20 
-                 bg-white/10 backdrop-blur-md text-white p-3 rounded-full 
-                 shadow-lg hover:bg-cyan-400/80 hover:text-black transition"
+      className="absolute left-2 top-1/2 -translate-y-1/2 z-10 
+                 bg-black/60 text-white p-3 rounded-full 
+                 shadow-lg hover:bg-cyan-500 hover:text-black transition"
     >
-      <ChevronLeft size={24} />
+      <ChevronLeft size={28} />
     </button>
   );
 }
@@ -36,33 +36,32 @@ export default function CarouselSection({ books }) {
   const settings = {
     dots: false,
     infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
+    speed: 600,
+    slidesToShow: 4,
+    slidesToScroll: 2,
+    centerMode: false,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 4 } },
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 640, settings: { slidesToShow: 2 } },
+      { breakpoint: 1536, settings: { slidesToShow: 4 } }, // 2xl screens
+      { breakpoint: 1280, settings: { slidesToShow: 4 } }, // xl
+      { breakpoint: 1024, settings: { slidesToShow: 3 } }, // lg
+      { breakpoint: 768, settings: { slidesToShow: 2 } },  // md
+      { breakpoint: 480, settings: { slidesToShow: 1 } },  // sm
     ],
   };
 
   return (
-    <div className="flex-grow flex items-center justify-center px-6 py-16 bg-gradient-to-b from-gray-900 via-gray-950 to-black">
-      <div className="max-w-6xl w-full bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl p-10 border border-white/10">
-        <div className="bg-gradient-to-b from-gray-900 via-gray-950 to-black py-14">
-          <div className="max-w-7xl mx-auto px-4">
-            <Slider {...settings}>
-              {books.map((book, index) => (
-                <div key={index} className="px-3">
-                  <BookCard book={book} />
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </div>
+    <section className="w-full bg-gradient-to-b from-gray-950 via-black to-gray-950 py-12">
+      <div className="container mx-auto max-w-7xl px-6 relative">
+        <Slider {...settings}>
+          {books.map((book, index) => (
+            <div key={index} className="px-2">
+              <BookCard book={book} />
+            </div>
+          ))}
+        </Slider>
       </div>
-    </div>
+    </section>
   );
 }
