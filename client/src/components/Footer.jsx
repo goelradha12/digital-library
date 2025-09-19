@@ -100,7 +100,7 @@ const Footer = () => {
               <h3 className="  text-2xl font-bold text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-purple-900 bg-clip-text">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="AboutUs" className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 text-sm">
+                  <a href="/aboutUs" className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 text-sm">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
