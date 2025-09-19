@@ -1,5 +1,4 @@
-export function getAllBooksQuery() {
-  const getAllBooks = `SELECT
+export const getAllBooksQuery = `SELECT
     b.Book_ID,
     b.Title,
     b.ISBN_No,
@@ -35,11 +34,8 @@ export function getAllBooksQuery() {
     Category AS c ON btc.Category_ID = c.Category_ID
     GROUP BY
     b.Book_ID;`;
-  return getAllBooks;
-}
 
-export function getBookByIDQuery(bookID) {
-  const getAllBooks = `SELECT
+export const getBookByIDQuery = `SELECT
         b.Book_ID,
         b.Title,
         b.ISBN_No,
@@ -75,8 +71,6 @@ export function getBookByIDQuery(bookID) {
         LEFT JOIN
         Category AS c ON btc.Category_ID = c.Category_ID
         WHERE
-        b.Book_ID = "${bookID}"
+        b.Book_ID = ?
         GROUP BY
         b.Book_ID;`;
-  return getAllBooks;
-}

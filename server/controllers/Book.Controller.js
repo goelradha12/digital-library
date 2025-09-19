@@ -1,16 +1,12 @@
 import { getAllBooksQuery, getBookByIDQuery } from "../Queries/Book.Queries.js";
 import pool from "../db.js";
+import { dbquery } from "../utils/db.helper.js";
 
 export async function getAllBooks(req, res) {
   try {
-    // For pool initialization
-    const conn = await pool.getConnection();
+    const result = await dbquery(getAllBooksQuery);
 
-    const query = getAllBooksQuery();
-    const [result, field] = await conn.query(query);
-    // Release the connection when finished!
-    pool.releaseConnection(conn);
-    console.log(result, field);
+    console.log(result);
     res.send(result);
   } catch (error) {
     res.status(500).send("Internal Server Error");
@@ -23,13 +19,9 @@ export async function getBookByID(req, res) {
     res.status(400).send("Book ID is required");
     return;
   }
-  const query = getBookByIDQuery(bookID);
   try {
-    // For pool initialization
-    const conn = await pool.getConnection();
-    const [result, field] = await conn.query(query);
-    // Release the connection when finished!
-    pool.releaseConnection(conn);
+    const result = await dbquery(getBookByIDQuery, [bookID]);
+
     if (result.length === 0) {
       res.status(404).send("Book not found");
     }
