@@ -43,8 +43,9 @@ const BookPage = () => {
     if (!book) return;
     axios
       .get(`http://localhost:5000/authors/${book.AuthorIDs}`)
-      .then((res) => setAuthorBooks(res.data))
+      .then((res) => {setAuthorBooks(res.data.data); console.log(res)})
       .catch(() => setAuthorBooks([fallbackBook]));
+    
   }, [book]);
 
   if (!book) return <p className="text-center text-white">Loading...</p>;

@@ -11,6 +11,7 @@ app.use(
 );
 import bookRouter from "./routers/Book.Routers.js";
 import authorRouter from "./routers/Author.Routers.js";
+import { apiError } from "./utils/api.error.js";
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
@@ -24,3 +25,25 @@ app.get("/", async (req, res) => {
 
 app.use("/books", bookRouter);
 app.use("/authors", authorRouter);
+
+// Centralized error middleware
+app.use((err, req, res, next) => {
+  console.error("Error:", err);
+
+  if (err instanceof apiError) {
+    return res.status(err.statusCode).json({
+      success: err.success,
+      statusCode: err.statusCode,
+      message: err.message,
+      errors: err.errors,
+      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
+  }
+
+  // fallback for unhandled errors
+  res.status(500).json({
+    success: false,
+    statusCode: 500,
+    message: "Internal Server Error",
+  });
+});

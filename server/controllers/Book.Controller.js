@@ -1,5 +1,4 @@
 import { getAllBooksQuery, getBookByIDQuery } from "../Queries/Book.Queries.js";
-import pool from "../db.js";
 import { dbquery } from "../utils/db.helper.js";
 
 export async function getAllBooks(req, res) {
@@ -14,12 +13,12 @@ export async function getAllBooks(req, res) {
 }
 
 export async function getBookByID(req, res) {
-  const bookID = req.params.id;
-  if (!bookID) {
-    res.status(400).send("Book ID is required");
-    return;
-  }
   try {
+    const bookID = req.params.id;
+    if (!bookID) {
+      res.status(400).send("Book ID is required");
+      return;
+    }
     const result = await dbquery(getBookByIDQuery, [bookID]);
 
     if (result.length === 0) {
