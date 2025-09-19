@@ -1,42 +1,48 @@
-import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import Footer from "../components/Footer";
-
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import Footer from '../components/Footer';
+import axios from 'axios';
 const Login = () => {
+  const [user, setUser] = useState({});
   const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginData({ ...loginData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = loginData;
 
     if (!email || !password) {
-      setSuccessMessage("");
-      alert("Please fill in all required fields!");
+      setSuccessMessage('');
+      alert('Please fill in all required fields!');
       return;
     }
+    console.log('Login Data:', loginData);
 
-    // ✅ Log login data to console
-    console.log("Login Data:", loginData);
-
-    // Show inline success message
-    setSuccessMessage("Login successful! 🎉");
-
-    // Optional: Reset form
-    setLoginData({
-      email: "",
-      password: "",
-    });
+    try {
+      const response = await axios.post('http://localhost:5000/users', loginData);
+      setUser(response.data);
+      // Show inline success message
+      setSuccessMessage('Login successful! 🎉');
+      
+      // Reset form
+      setLoginData({
+        email: '',
+        password: '',
+      });
+    } catch (error) {
+      console.log(error);
+      setSuccessMessage('Login failed. Please try again.');
+    }
   };
 
   return (
@@ -80,7 +86,7 @@ const Login = () => {
           <div className="relative">
             <label className="block text-sm text-gray-300 mb-2">Password</label>
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               name="password"
               placeholder="Enter your password"
               value={loginData.password}
@@ -107,7 +113,7 @@ const Login = () => {
 
           {/* Sign up link */}
           <p className="text-center text-sm text-gray-400">
-            Don't have an account?{" "}
+            Don't have an account?{' '}
             <a href="/signup" className="text-blue-400 hover:underline">
               Sign up
             </a>
