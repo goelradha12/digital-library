@@ -3,7 +3,7 @@ import { apiError } from "../utils/api.error.js";
 import { apiResponse } from "../utils/api.response.js";
 import { dbquery } from "../utils/db.helper.js";
 
-export async function getAllBooksOfAuthor(req, res) {
+export async function getAllBooksOfAuthor(req, res, next) {
   try {
     const authorID = req.params.id;
     if (!authorID) {

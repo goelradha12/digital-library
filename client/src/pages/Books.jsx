@@ -9,7 +9,7 @@ const Books = () => {
   useEffect(() => {
     axios
       .get('http://localhost:5000/books')
-      .then((res) => setBooks(res.data))
+      .then((res) => {setBooks(res.data.data); console.log(res.data)})
       .catch((err) => {
         console.log(err);
         setBooks(mybooks); // fallback to local

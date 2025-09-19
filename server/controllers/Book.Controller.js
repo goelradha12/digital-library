@@ -1,18 +1,19 @@
 import { getAllBooksQuery, getBookByIDQuery } from "../Queries/Book.Queries.js";
+import { apiError } from "../utils/api.error.js";
+import { apiResponse } from "../utils/api.response.js";
 import { dbquery } from "../utils/db.helper.js";
 
-export async function getAllBooks(req, res) {
+export async function getAllBooks(req, res, next) {
   try {
     const result = await dbquery(getAllBooksQuery);
-
     console.log(result);
-    res.send(result);
+    res.json(new apiResponse(200, result, "Books fetched Successfully"));
   } catch (error) {
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 }
 
-export async function getBookByID(req, res) {
+export async function getBookByID(req, res,next) {
   try {
     const bookID = req.params.id;
     if (!bookID) {
@@ -22,12 +23,11 @@ export async function getBookByID(req, res) {
     const result = await dbquery(getBookByIDQuery, [bookID]);
 
     if (result.length === 0) {
-      res.status(404).send("Book not found");
+      throw new apiError(404, "Book not found");
     }
     console.log(result);
-    res.send(result);
+    res.json(new apiResponse(200, result, "Book fetched Successfully"));
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 }

@@ -35,7 +35,7 @@ const BookPage = () => {
   useEffect(() => {
     axios
       .get(`http://localhost:5000/books/${id}`)
-      .then((res) => setBook(res.data[0]))
+      .then((res) => setBook(res.data.data))
       .catch(() => setBook(fallbackBook));
   }, [id]);
 
