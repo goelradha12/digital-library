@@ -167,10 +167,7 @@ const Footer = () => {
               </h3>
               <ul className="space-y-2">
                 <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 text-sm"
-                  >
+                  <a href="/aboutUs" className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 text-sm">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path
                         strokeLinecap="round"
