@@ -1,138 +1,233 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Footer from '../components/Footer';
-import BookCarousel from '../components/BookCarousel';
 import { useParams } from 'react-router';
+import { axiosInstance } from '../utils/axios';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import CarouselSection from '../components/BookCarousel';
+import { ThumbsUp, Download, Star, Heart } from 'lucide-react';
+import { mybooks } from '../components/Data';
+
+const fallbackBook = {
+  Accession_No: '1997001ROWH.002',
+  AuthorIDs: 'AUT000000002',
+  Author_Images: null,
+  Author_Introductions: 'British author, best known for the Harry Potter series.',
+  Authors: 'Rowling, J.K.',
+  Book_ID: 'B00000000004',
+  Book_Summary: 'First novel in the Harry Potter series.',
+  Categories: 'Fantasy, Adventure',
+  Cover_Image: null,
+  ISBN_No: '9780747532743',
+  ISSN_No: null,
+  Language: 'English',
+  No_of_Pages: 223,
+  Publication_Year: '1997',
+  PublisherID: 'PUB000000002',
+  PublisherName: 'HarperCollins',
+  SeriesID: 'SER000000002',
+  SeriesName: 'A Song of Ice and Fire',
+  Series_Description: 'Epic fantasy novels by George R. R. Martin.',
+  Title: "Harry Potter and the Philosopher's Stone",
+};
 
 const BookPage = () => {
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [authorBooks, setAuthorBooks] = useState([]);
-
-  const fallbackBook = {
-    Accession_No: '1997001ROWH.002',
-    AuthorIDs: 'AUT000000002',
-    Author_Images: null,
-    Author_Introductions: 'British author, best known for the Harry Potter series.',
-    Authors: 'Rowling, J.K.',
-    Book_ID: 'B00000000004',
-    Book_Summary: 'First novel in the Harry Potter series.',
-    Categories: 'Fantasy',
-    Cover_Image: null,
-    ISBN_No: '9780747532743',
-    ISSN_No: null,
-    Language: 'English',
-    No_of_Pages: 223,
-    Publication_Year: '1997',
-    PublisherID: 'PUB000000002',
-    PublisherName: 'HarperCollins',
-    SeriesID: 'SER000000002',
-    SeriesName: 'A Song of Ice and Fire',
-    Series_Description: 'Epic fantasy novels by George R. R. Martin.',
-    Title: "Harry Potter and the Philosopher's Stone",
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/books/${id}`)
-      .then((res) => setBook(res.data.data))
-      .catch(() => setBook(fallbackBook));
+    const fetchBookAndAuthor = async () => {
+      try {
+        // Fetch main book data
+        console.log(`Fetching book with ID: ${id}`);
+        const bookRes = await axiosInstance.get(`/books/${id}`);
+        const bookData = bookRes.data?.data?.[0];
+
+        if (!bookData) {
+          throw new Error('Book data not found in response.');
+        }
+        setBook(bookData);
+
+        // Fetch other books by the same author only if AuthorIDs exists
+        if (bookData.AuthorIDs) {
+          console.log(`Fetching other books by author: ${bookData.AuthorIDs}`);
+          const authorBooksRes = await axiosInstance.get(`/authors/${bookData.AuthorIDs}/books`);
+          console.log(authorBooksRes.data?.data);
+          setAuthorBooks(authorBooksRes.data?.data || []);
+        }
+      } catch (error) {
+        console.error('API call failed. Using fallback data. Error:', error.message);
+        setBook(fallbackBook);
+        setAuthorBooks(mybooks);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookAndAuthor();
   }, [id]);
 
-  useEffect(() => {
-    if (!book) return;
-    axios
-      .get(`http://localhost:5000/authors/${book.AuthorIDs}`)
-      .then((res) => {setAuthorBooks(res.data.data); console.log(res)})
-      .catch(() => setAuthorBooks([fallbackBook]));
-    
-  }, [book]);
-
-  if (!book) return <p className="text-center text-white">Loading...</p>;
+  if (loading || !book) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-800">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-400"></div>
+      </div>
+    );
+  }
 
   return (
     <>
-      <div id="book-overview" className="flex flex-col lg:grid lg:grid-flow-col lg:items-center bg-gradient-to-b from-black via-gray-900 to-black text-gray-200">
-        <div className="grid p-6 md:p-10">
-          <div className="mb-2 flex flex-wrap gap-2">
-            <span className="bg-gray-700 text-white rounded-full px-3 py-1 text-sm">
-              {book.Categories}
-            </span>
+      <Header />
+      <div className="bg-gray-50 min-h-screen pt-20 pb-12 font-sans text-gray-800">
+        {/* Book Overview Section */}
+        <section
+          id="book-overview"
+          className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row items-center lg:items-start gap-12"
+        >
+          <div className="flex-shrink-0">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {book.Categories &&
+                book.Categories.split(',').map((category, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 rounded-full text-xs font-medium text-white bg-[#A56F6E] whitespace-nowrap shadow-sm"
+                  >
+                    {category.trim()}
+                  </span>
+                ))}
+            </div>
+            <img
+              src={book.Cover_Image || `/unzipped_books/${book.Book_ID}.jpg`}
+              alt={book.Title}
+              className="w-full max-w-xs md:max-w-sm lg:max-w-xs rounded-lg shadow-lg border-2 border-gray-200"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://placehold.co/400x600/F0F0F0/A56F6E?text=Cover+Unavailable';
+              }}
+            />
           </div>
-          <img
-            src={book.Cover_Image || `/unzipped_books/${book.Book_ID}.jpg`}
-            alt={book.Title}
-            className="w-full max-w-xs md:max-w-sm lg:h-[40vw] mx-auto py-4 rounded shadow-lg"
-          />
-          <div className="grid grid-cols-2 gap-4 text-center mt-2 text-gray-400">
-            <span>0 Likes</span>
-            <span>0 Downloads</span>
-          </div>
-        </div>
 
-        <div className="py-6 md:py-10">
-          <div className="px-6 md:p-10 border-t lg:border-t-0 lg:border-l border-gray-700 grid gap-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-white">{book.Title}</h1>
-            <p className="text-gray-400">{book.Authors}</p>
-            <div className="py-3">
-              <h2 className="text-lg md:text-xl pb-1 font-semibold text-white">Overview</h2>
-              <p className="text-gray-300">{book.Book_Summary}</p>
-            </div>
-            <div className="py-3 grid gap-1">
-              <h2 className="text-lg md:text-xl pb-1 font-semibold text-white">Details</h2>
-              <span><span className="font-semibold">Accession No.:</span> {book.Accession_No}</span>
-              <span><span className="font-semibold">Publisher:</span> {book.PublisherName}</span>
-              <span><span className="font-semibold">Publication Year:</span> {book.Publication_Year}</span>
-              <span><span className="font-semibold">ISBN:</span> {book.ISBN_No || 'N/A'}</span>
-              <span><span className="font-semibold">ISSN:</span> {book.ISSN_No || 'N/A'}</span>
-              <span><span className="font-semibold">Page Count:</span> {book.No_of_Pages}</span>
-              <span><span className="font-semibold">Language:</span> {book.Language}</span>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 items-center py-5">
-              <button className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded">
-                Add to Downloads
-              </button>
-              <div className="text-lg">
-                <span className="underline text-blue-400">Add to Wishlist</span> ❤️
+          <div className="w-full lg:pb-6">
+            <h1 className="text-3xl md:text-4xl font-serif text-gray-900 leading-tight mb-2">
+              {book.Title}
+            </h1>
+            <p className="text-xl font-medium text-gray-600 mb-6">By {book.Authors}</p>
+
+            {/* Ratings, Likes & Downloads */}
+            <div className="flex items-center gap-6 mb-8">
+              <div className="flex items-center gap-2">
+                <span className="text-[#A56F6E]">
+                  <Star size={20} fill="#A56F6E" />
+                </span>
+                <span className="text-sm font-medium text-gray-600">4.5/5 (0 Reviews)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[#A56F6E]">
+                  <ThumbsUp size={20} />
+                </span>
+                <span className="text-sm font-medium text-gray-600">123 Likes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[#A56F6E]">
+                  <Download size={20} />
+                </span>
+                <span className="text-sm font-medium text-gray-600">456 Downloads</span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div id="book-authors" className="bg-gray-900 text-gray-200">
-        <div className="p-6 md:p-10">
-          <h2 className="text-2xl md:text-3xl text-center pb-5 font-bold">Author</h2>
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col md:flex-row items-center gap-6 max-w-4xl mx-auto p-10 rounded-lg shadow-lg bg-gray-800">
+            <div className="grid gap-4">
+              <div className="py-2">
+                <h2 className="text-xl font-semibold mb-2">Overview</h2>
+                <p className="text-gray-600 leading-relaxed">{book.Book_Summary}</p>
+              </div>
+              <div className="py-2">
+                <h2 className="text-xl font-semibold mb-2">Details</h2>
+                <div className="grid gap-1">
+                  <span className="text-gray-600">
+                    <span className="font-semibold text-gray-800">Publisher:</span>{' '}
+                    {book.PublisherName}
+                  </span>
+                  <span className="text-gray-600">
+                    <span className="font-semibold text-gray-800">Publication Year:</span>{' '}
+                    {book.Publication_Year}
+                  </span>
+                  <span className="text-gray-600">
+                    <span className="font-semibold text-gray-800">Page Count:</span>{' '}
+                    {book.No_of_Pages}
+                  </span>
+                  <span className="text-gray-600">
+                    <span className="font-semibold text-gray-800">Language:</span> {book.Language}
+                  </span>
+                  <span className="text-gray-600">
+                    <span className="font-semibold text-gray-800">ISBN:</span>{' '}
+                    {book.ISBN_No || 'N/A'}
+                  </span>
+                  <span className="text-gray-600">
+                    <span className="font-semibold text-gray-800">Accession No.:</span>{' '}
+                    {book.Accession_No}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6 mt-8">
+              <button className="px-6 py-2 rounded-full border-2 border-[#A56F6E] text-[#A56F6E] hover:bg-[#A56F6E] hover:text-white transition-all duration-300 font-semibold">
+                Add to Downloads
+              </button>
+              <a
+                href="#"
+                className="flex items-center gap-2 text-[#A56F6E] text-sm font-semibold transition-colors duration-200 hover:text-[#8F5B5A]"
+              >
+                <Heart size={16} />
+                Add to Wishlist
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Author Section */}
+        <section id="book-authors" className="max-w-7xl mx-auto px-6 py-12 bg-white">
+          <h2
+            className="text-2xl md:text-3xl font-serif text-center mb-6"
+            style={{ color: '#A56F6E' }}
+          >
+            About the Author
+          </h2>
+          <div className="flex justify-center">
+            <div className="flex flex-col md:flex-row items-center gap-6 max-w-4xl p-8 rounded-lg shadow-lg bg-white">
               <img
-                src={book.Author_Images || '/default-author.jpg'}
+                src={
+                  book.Author_Images ||
+                  'https://placehold.co/160x160/F0F0F0/A56F6E?text=Author+Image'
+                }
                 alt={book.Authors}
                 className="h-32 w-32 md:h-40 md:w-40 object-cover rounded-full shadow-lg"
               />
               <div className="text-center md:text-left grid gap-2">
-                <span className="text-xl md:text-2xl font-semibold">{book.Authors}</span>
-                <p className="text-gray-400 text-sm md:text-base">{book.Author_Introductions}</p>
+                <span className="text-xl md:text-2xl font-serif font-medium">{book.Authors}</span>
+                <p className="text-gray-600 leading-relaxed">{book.Author_Introductions}</p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <div className="bg-black">
-        <div className="p-6 md:p-10 text-gray-200">
-          <h2 className="text-2xl md:text-3xl text-center pb-5 font-bold">Reviews</h2>
-          <p className="text-center text-gray-500">Reviews feature coming soon...</p>
-        </div>
-      </div>
-
-      <div className="bg-gray-950">
-        <div className="p-6 md:p-10 text-gray-200">
-          <h2 className="text-2xl md:text-3xl text-center pb-5 font-bold">You Might Also Like</h2>
-          <div className="flex flex-col md:flex-row gap-4">
-            <BookCarousel books={authorBooks} />
-          </div>
-        </div>
+        {/* You Might Also Like Section */}
+        {authorBooks && authorBooks.length > 0 && (
+          <section className=" py-12">
+            <div className="max-w-7xl mx-auto px-6">
+              <h2
+                className="text-2xl md:text-3xl font-serif text-center mb-6"
+                style={{ color: '#A56F6E' }}
+              >
+                More by this Author
+              </h2>
+              <div className="flex flex-col md:flex-row gap-4">
+                <CarouselSection books={authorBooks} />
+              </div>
+            </div>
+          </section>
+        )}
       </div>
       <Footer />
     </>
