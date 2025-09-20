@@ -5,43 +5,54 @@ export default function BookCard({ book }) {
 
   return (
     <div
-      className="w-64 h-96 bg-gray-900 rounded-2xl shadow-md 
-                 hover:shadow-xl transition-transform transform 
-                 hover:-translate-y-2 overflow-hidden 
-                 border border-gray-700 flex flex-col"
+      className="group bg-white rounded-lg 
+                 hover:border-[#A56F6E] hover:shadow-lg transition-all duration-300 
+                 transform hover:-translate-y-2 cursor-pointer flex flex-col"
+      onClick={() => navigate(`/books/${book.Book_ID}`)}
     >
-      {/* Cover */}
-      <div
-        className="h-2/3 w-full bg-cover bg-center"
-        style={{
-          backgroundImage: `url(/unzipped_books/${book.Book_ID}.jpg)`,
-        }}
-        title={book.Title}
-      />
+      {/* Book Cover with Category Tags */}
+      <div className="w-full h-64 overflow-hidden relative rounded-t-lg">
+        <img
+          src={`/unzipped_books/${book.Book_ID}.jpg`}
+          alt={`Cover of ${book.Title}`}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://placehold.co/400x600/F0F0F0/A56F6E?text=Cover+Unavailable";
+          }}
+        />
+        <div className="absolute top-2 left-2 flex flex-wrap gap-1 z-10">
+          {book.Categories && book.Categories.split(',').map((category, index) => (
+            <span 
+              key={index} 
+              className="px-2 py-0.5 rounded-full text-xs font-medium text-white border border-gray-400 bg-gray-900 whitespace-nowrap shadow-sm"
+            >
+              {category.trim()}
+            </span>
+          ))}
+        </div>
+      </div>
 
-      {/* Info */}
-      <div className="flex flex-col flex-grow justify-between p-4 text-center">
-        <div>
-          <h3 className="font-semibold text-lg text-white truncate">
+      {/* Book Info */}
+       <div className="p-4 flex flex-col flex-grow justify-between bg-[#F2F0EF]">
+        <div className="flex flex-col flex-grow">
+          <h3 className="font-serif text-lg font-medium text-gray-900 break-words mb-2 line-clamp-2 leading-[1.2em]">
             {book.Title}
           </h3>
-          <p className="text-sm text-purple-300 italic truncate">
-            {book.Categories}
-          </p>
-          <p className="text-sm font-medium text-gray-300 mt-1 truncate">
-            {book.Authors}
+          <p className="text-sm font-sans text-gray-600 mb-2">
+            By {book.Authors}
           </p>
         </div>
-
-        <button
-          onClick={() => navigate(`/books/${book.Book_ID}`)}
-          className="mt-3 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 
-                     hover:from-cyan-600 hover:to-blue-700 
-                     text-white text-sm font-medium rounded-lg shadow 
-                     transition-colors"
-        >
-          Know More
-        </button>
+        <div className="mt-auto">
+          <p className="text-sm font-sans text-gray-500">
+            <span className='font-semibold text-gray-700'>Published: </span>
+            <span className='text-gray-600'>{book.Publication_Year}</span>
+          </p>
+          <p className="text-sm font-sans text-gray-500">
+            <span className='font-semibold text-gray-700'>Pages: </span>
+            <span className='text-gray-600'>{book.No_of_Pages}</span>
+          </p>
+        </div>
       </div>
     </div>
   );

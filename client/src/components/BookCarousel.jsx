@@ -1,33 +1,32 @@
+// CarouselSection.jsx
 import Slider from 'react-slick';
 import BookCard from './BookCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-function NextArrow(props) {
-  const { onClick } = props;
+function NextArrow({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="absolute right-2 top-1/2 -translate-y-1/2 z-10 
-                 bg-black/60 text-white p-3 rounded-full 
-                 shadow-lg hover:bg-cyan-500 hover:text-black transition"
+      className="absolute -right-6 top-1/2 -translate-y-1/2 z-10 
+                 bg-gray-200/80 backdrop-blur-sm text-gray-800 p-3 rounded-full 
+                 shadow-lg hover:bg-[#A56F6E] hover:text-white transition"
     >
-      <ChevronRight size={28} />
+      <ChevronRight size={26} />
     </button>
   );
 }
 
-function PrevArrow(props) {
-  const { onClick } = props;
+function PrevArrow({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="absolute left-2 top-1/2 -translate-y-1/2 z-10 
-                 bg-black/60 text-white p-3 rounded-full 
-                 shadow-lg hover:bg-cyan-500 hover:text-black transition"
+      className="absolute -left-6 top-1/2 -translate-y-1/2 z-10 
+                 bg-gray-200/80 backdrop-blur-sm text-gray-800 p-3 rounded-full 
+                 shadow-lg hover:bg-[#A56F6E] hover:text-white transition"
     >
-      <ChevronLeft size={28} />
+      <ChevronLeft size={26} />
     </button>
   );
 }
@@ -43,20 +42,20 @@ export default function CarouselSection({ books }) {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      { breakpoint: 1536, settings: { slidesToShow: 4 } }, // 2xl screens
+      { breakpoint: 1536, settings: { slidesToShow: 4 } }, // 2xl
       { breakpoint: 1280, settings: { slidesToShow: 4 } }, // xl
       { breakpoint: 1024, settings: { slidesToShow: 3 } }, // lg
-      { breakpoint: 768, settings: { slidesToShow: 2 } },  // md
-      { breakpoint: 480, settings: { slidesToShow: 1 } },  // sm
+      { breakpoint: 768, settings: { slidesToShow: 2 } }, // md
+      { breakpoint: 480, settings: { slidesToShow: 1 } }, // sm
     ],
   };
 
   return (
-    <section className="w-full bg-gradient-to-b from-gray-950 via-black to-gray-950 py-12">
+    <section className="w-full bg-gray-50 py-12">
       <div className="container mx-auto max-w-7xl px-6 relative">
         <Slider {...settings}>
           {books.map((book, index) => (
-            <div key={index} className="px-2">
+            <div key={index} className="px-3 py-2">
               <BookCard book={book} />
             </div>
           ))}
