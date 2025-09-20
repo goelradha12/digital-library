@@ -5,6 +5,7 @@ export default {
     extend: {
       animation: {
         gradientMove: 'gradientMove 8s linear infinite',
+        fadeIn: 'fadeIn 1.5s ease-in',
       },
       keyframes: {
         gradientMove: {
@@ -15,6 +16,18 @@ export default {
             'background-position': '100% 50%',
           },
         },
+        fadeIn: {
+          'from': { opacity: '0', transform: 'translateY(-20px)' },
+          'to': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', 'serif'],
+        sans: ['"Roboto"', 'sans-serif'], // You can add other fonts here
+      },
+      colors: {
+        'dusty-rose': '#A56F6E',
+        'dusty-rose-dark': '#8F5B5A',
       },
     },
   },
