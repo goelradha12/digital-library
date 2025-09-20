@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import Footer from '../components/Footer';
 import axios from 'axios';
+
 const Login = () => {
   const [user, setUser] = useState({});
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: '',
-  });
-
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -26,19 +23,12 @@ const Login = () => {
       alert('Please fill in all required fields!');
       return;
     }
-    console.log('Login Data:', loginData);
 
     try {
       const response = await axios.post('http://localhost:5000/users', loginData);
       setUser(response.data);
-      // Show inline success message
       setSuccessMessage('Login successful! 🎉');
-      
-      // Reset form
-      setLoginData({
-        email: '',
-        password: '',
-      });
+      setLoginData({ email: '', password: '' });
     } catch (error) {
       console.log(error);
       setSuccessMessage('Login failed. Please try again.');
@@ -47,78 +37,91 @@ const Login = () => {
 
   return (
     <div>
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200 min-h-screen flex flex-col items-center justify-center px-6">
-        {/* Header */}
-        <header className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-purple-900 bg-clip-text">
-            Log In
-          </h1>
-          <p className="mt-3 text-gray-400 text-sm md:text-base">
-            Access your <b>Digital Library Management System</b> account
-          </p>
-        </header>
+      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-center items-center px-6 relative">
+        {/* Background pattern */}
+        <div
+          className="absolute inset-0 bg-repeat"
+          style={{
+            backgroundImage: "url('/bookshelf-pattern.svg')",
+            backgroundSize: '100px',
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+        ></div>
 
-        {/* Login Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white/5 backdrop-blur-md p-8 rounded-xl shadow-lg w-full max-w-md space-y-6"
-        >
-          {/* Success Message */}
-          {successMessage && (
-            <p className="text-green-400 text-center font-medium">{successMessage}</p>
-          )}
-
-          {/* Email */}
-          <div>
-            <label className="block text-sm text-gray-300 mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={loginData.email}
-              onChange={handleChange}
-              className="w-full bg-transparent px-3 py-3 rounded-lg text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-
-          {/* Password */}
-          <div className="relative">
-            <label className="block text-sm text-gray-300 mb-2">Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              placeholder="Enter your password"
-              value={loginData.password}
-              onChange={handleChange}
-              className="w-full bg-transparent px-3 py-3 rounded-lg text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:border-blue-500 pr-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-10 text-gray-400 hover:text-gray-200"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:opacity-90 transition"
+        {/* Login Box */}
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 relative z-10">
+          <h1
+            className="text-4xl font-serif text-center mb-4 animate-fadeIn"
+            style={{ color: '#A56F6E' }}
           >
             Log In
-          </button>
+          </h1>
+          <p className="text-center text-gray-600 mb-6">
+            Access your <b>Digital Library</b> account
+          </p>
+
+          {/* Success Message */}
+          {successMessage && (
+            <p className="text-center text-green-600 mb-4">{successMessage}</p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={loginData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E]"
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={loginData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E] pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-500 hover:text-[#A56F6E]"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="mt-3 w-full px-6 py-3 text-lg font-semibold text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#A56F6E] focus:ring-opacity-50"
+              style={{ backgroundColor: '#A56F6E' }}
+            >
+              Log In
+            </button>
+          </form>
 
           {/* Sign up link */}
-          <p className="text-center text-sm text-gray-400">
-            Don't have an account?{' '}
-            <a href="/signup" className="text-blue-400 hover:underline">
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Don’t have an account?{' '}
+            <a href="/signup" className="text-[#A56F6E] font-medium hover:underline">
               Sign up
             </a>
           </p>
-        </form>
+        </div>
       </div>
 
       <Footer />

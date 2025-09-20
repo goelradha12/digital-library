@@ -1,181 +1,190 @@
-import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import Footer from "../components/Footer";
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import Footer from '../components/Footer';
+import axios from 'axios';
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
+  const [signupData, setSignupData] = useState({
+    name: '',
+    email: '',
+    password: '',
     avatar: null,
-    country: "",
+    country: '',
   });
-
   const [showPassword, setShowPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "avatar" && files.length > 0) {
-      const file = files[0];
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Image size must be less than 2MB");
-        return;
-      }
-      setFormData({ ...formData, avatar: file });
+    if (name === 'avatar') {
+      setSignupData({ ...signupData, avatar: files[0] });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setSignupData({ ...signupData, [name]: value });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, country } = formData;
+    const { name, email, password, country, avatar } = signupData;
 
     if (!name || !email || !password || !country) {
-      setSuccessMessage("");
-      alert("Please fill in all required fields!");
+      setSuccessMessage('');
+      alert('Please fill in all required fields!');
       return;
     }
 
-    // ✅ Log the form data to the console
-    console.log("Signup Data:", formData);
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('country', country);
+      if (avatar) formData.append('avatar', avatar);
 
-    // Show inline success message
-    setSuccessMessage("Signup successful! 🎉");
+      const response = await axios.post('http://localhost:5000/users/signup', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      avatar: null,
-      country: "",
-    });
+      setSuccessMessage('Signup successful! 🎉');
+      setSignupData({ name: '', email: '', password: '', avatar: null, country: '' });
+    } catch (error) {
+      console.log(error);
+      setSuccessMessage('Signup failed. Please try again.');
+    }
   };
 
   return (
     <div>
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200 min-h-screen flex flex-col items-center justify-center px-6">
-        {/* Header */}
-        <header className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-purple-900 bg-clip-text">
-            Sign Up
-          </h1>
-          <p className="mt-3 text-gray-400 text-sm md:text-base">
-            Create your account to explore the <b>Digital Library Management System</b>
-          </p>
-        </header>
+      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-center items-center px-6 relative">
+        {/* Background pattern */}
+        <div
+          className="absolute inset-0 bg-repeat"
+          style={{
+            backgroundImage: "url('/bookshelf-pattern.svg')",
+            backgroundSize: '100px',
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+        ></div>
 
-        {/* Signup Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white/5 backdrop-blur-md p-8 rounded-xl shadow-lg w-full max-w-md space-y-6"
-        >
-          {/* Success Message */}
-          {successMessage && (
-            <p className="text-green-400 text-center font-medium">{successMessage}</p>
-          )}
-
-          {/* Name */}
-          <div>
-            <label className="block text-sm text-gray-300 mb-2">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter your name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full bg-transparent px-3 py-3 rounded-lg text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="block text-sm text-gray-300 mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full bg-transparent px-3 py-3 rounded-lg text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-
-          {/* Password */}
-          <div className="relative">
-            <label className="block text-sm text-gray-300 mb-2">Password</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full bg-transparent px-3 py-3 rounded-lg text-gray-200 placeholder-gray-500 border border-gray-600 focus:outline-none focus:border-blue-500 pr-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-10 text-gray-400 hover:text-gray-200"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          {/* Avatar */}
-          <div>
-            <label className="block text-sm text-gray-300 mb-2">Avatar</label>
-            <input
-              type="file"
-              name="avatar"
-              accept="image/*"
-              onChange={handleChange}
-              className="w-full text-gray-300 bg-transparent border border-gray-600 rounded-lg px-3 py-2 focus:outline-none"
-            />
-            <p className="text-xs text-gray-500 mt-1">Max size: 2MB</p>
-          </div>
-
-          {/* Country */}
-          <div>
-            <label className="block text-sm text-gray-300 mb-2">Country</label>
-            <select
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="w-full bg-transparent px-3 py-3 rounded-lg text-gray-200 border border-gray-600 focus:outline-none focus:border-purple-500"
-              required
-            >
-              <option value="" disabled>
-                Select your country
-              </option>
-              <option value="India">India</option>
-              <option value="USA">USA</option>
-              <option value="UK">United Kingdom</option>
-              <option value="Canada">Canada</option>
-              <option value="Australia">Australia</option>
-            </select>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:opacity-90 transition"
+        {/* Signup Box */}
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 relative z-10">
+          <h1
+            className="text-4xl font-serif text-center mb-4 animate-fadeIn"
+            style={{ color: '#A56F6E' }}
           >
             Sign Up
-          </button>
+          </h1>
+          <p className="text-center text-gray-600 mb-6">
+            Create your <b>Digital Library</b> account
+          </p>
 
-          {/* Already have account */}
-          <p className="text-center text-sm text-gray-400">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-400 hover:underline">
+          {/* Success Message */}
+          {successMessage && (
+            <p className="text-center text-green-600 mb-4">{successMessage}</p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Name</label>
+              <input
+                type="text"
+                name="name"
+                value={signupData.name}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E]"
+                required
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={signupData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E]"
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={signupData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E] pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-500 hover:text-[#A56F6E]"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Country */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Country</label>
+              <select
+                name="country"
+                value={signupData.country}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E]"
+                required
+              >
+                <option value="">Select your country</option>
+                <option value="India">India</option>
+                <option value="USA">USA</option>
+                <option value="UK">UK</option>
+                <option value="Canada">Canada</option>
+                <option value="Australia">Australia</option>
+              </select>
+            </div>
+
+            {/* Avatar */}
+            <div>
+              <label className="block text-sm text-gray-700 mb-2">Avatar</label>
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A56F6E]"
+              />
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="mt-3 w-full px-6 py-3 text-lg font-semibold text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#A56F6E] focus:ring-opacity-50"
+              style={{ backgroundColor: '#A56F6E' }}
+            >
+              Sign Up
+            </button>
+          </form>
+
+          {/* Login link */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Already have an account?{' '}
+            <a href="/login" className="text-[#A56F6E] font-medium hover:underline">
               Log in
             </a>
           </p>
-        </form>
+        </div>
       </div>
 
       <Footer />
