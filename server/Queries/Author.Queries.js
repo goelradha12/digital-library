@@ -2,6 +2,8 @@ export const getAllBooksOfAuthorQuery = `
     SELECT 
       a.Author_ID,
       a.Author_Name AS Authors,
+      b.Publication_Year,
+      b.No_of_Pages,
       b.Book_ID,
       b.Title,
       GROUP_CONCAT(DISTINCT c.Category_Name ORDER BY c.Category_Name SEPARATOR ', ') AS Categories
