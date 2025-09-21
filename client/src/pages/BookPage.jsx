@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { axiosInstance } from '../utils/axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -31,6 +31,7 @@ const fallbackBook = {
 };
 
 const BookPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [authorBooks, setAuthorBooks] = useState([]);
@@ -195,14 +196,14 @@ const BookPage = () => {
             About the Author
           </h2>
           <div className="flex justify-center">
-            <div className="flex flex-col md:flex-row items-center gap-6 max-w-4xl p-8 rounded-lg shadow-lg bg-white">
+            <div onClick={()=>{navigate(`/authors/${book.AuthorIDs}`)}} className="flex flex-col md:flex-row items-center gap-6 max-w-4xl p-8 hover:rounded-lg hover:shadow-lg cursor-pointer bg-white">
               <img
                 src={
                   book.Author_Images ||
                   'https://placehold.co/160x160/F0F0F0/A56F6E?text=Author+Image'
                 }
                 alt={book.Authors}
-                className="h-32 w-32 md:h-40 md:w-40 object-cover rounded-full shadow-lg"
+                className="h-32 w-32 md:h-40 md:w-40 object-cover rounded-full"
               />
               <div className="text-center md:text-left grid gap-2">
                 <span className="text-xl md:text-2xl font-serif font-medium">{book.Authors}</span>

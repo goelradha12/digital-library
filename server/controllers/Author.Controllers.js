@@ -34,7 +34,7 @@ export async function getAllAuthors(req, res, next) {
 
 export async function getAuthorByID(req, res, next) {
   try {
-    const authorID = req.params.id;
+    const authorID = req.params.authorID;
     if (!authorID) {
       throw new apiError(400, "Author ID is required");
     }

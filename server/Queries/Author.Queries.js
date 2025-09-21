@@ -18,4 +18,4 @@ export const getAllBooksOfAuthorQuery = `
 
 export const getAllAuthorsQuery = `SELECT * from Author;`
 
-export const getAuthorByIDQuery = `SELECT from Author WHERE Author_ID = ?;`
+export const getAuthorByIDQuery = `SELECT * from Author WHERE Author_ID = ?;`
