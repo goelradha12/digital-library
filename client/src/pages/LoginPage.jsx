@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import Footer from '../components/Footer';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +39,14 @@ const Login = () => {
 
   return (
     <div>
-      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-center items-center px-6 relative">
+      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-center items-center px-6 py-10 relative">
+        {/* Navigation to home */}
+        <div className="flex items-center space-x-4 absolute top-4 left-4 z-10">
+          <ChevronLeft className="h-4 w-4  cursor-pointer" />
+          <span onClick={() => navigate('/')} className="text-[#A56F6E] cursor-pointer">
+            Home
+          </span>
+        </div>
         {/* Background pattern */}
         <div
           className="absolute inset-0 bg-repeat"
@@ -62,9 +71,7 @@ const Login = () => {
           </p>
 
           {/* Success Message */}
-          {successMessage && (
-            <p className="text-center text-green-600 mb-4">{successMessage}</p>
-          )}
+          {successMessage && <p className="text-center text-green-600 mb-4">{successMessage}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
@@ -97,7 +104,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-500 hover:text-[#A56F6E]"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#A56F6E] cursor-pointer"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
