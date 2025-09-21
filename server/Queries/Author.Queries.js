@@ -15,3 +15,7 @@ export const getAllBooksOfAuthorQuery = `
     WHERE a.Author_ID = ?
     GROUP BY a.Author_ID, a.Author_Name, b.Book_ID, b.Title;
   `;
+
+export const getAllAuthorsQuery = `SELECT * from Author;`
+
+export const getAuthorByIDQuery = `SELECT from Author WHERE Author_ID = ?;`

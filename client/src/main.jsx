@@ -7,6 +7,8 @@ import BookPage from './pages/BookPage';
 import AboutUs from './pages/AboutUs';
 import './index.css';
 import Books from './pages/Books';
+import Authors from './pages/Authors';
+import AuthorPage from './pages/AuthorPage';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -17,6 +19,8 @@ createRoot(document.getElementById('root')).render(
       <Route path="/books/:id" element={<BookPage />} />
       <Route path="/books" element={<Books />} />
       <Route path="/aboutUs" element={<AboutUs />} />
+      <Route path="/authors" element={<Authors />} />
+      <Route path='/authors/:id' element={<AuthorPage />}/>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
