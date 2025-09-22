@@ -12,6 +12,7 @@ app.use(
 import bookRouter from "./routers/Book.Routers.js";
 import authorRouter from "./routers/Author.Routers.js";
 import authUserRouter from "./routers/User.Routers.js";
+import publisherRouter from "./routers/Publisher.Routes.js";
 import { apiError } from "./utils/api.error.js";
 
 app.use(express.json());
@@ -28,6 +29,7 @@ app.get("/", async (req, res) => {
 app.use("/books", bookRouter);
 app.use("/authors", authorRouter);
 app.use("/users", authUserRouter);
+app.use("/publishers", publisherRouter);
 // Centralized error middleware
 app.use((err, req, res, next) => {
   console.error("Error:", err);

@@ -5,6 +5,6 @@ const router = Router();
 
 router.get("/:id/books", getAllBooksOfPublisher);
 router.get("/all", getAllPublishers);
-router.get("/:PublisherID",getPublisherByID);
+router.get("/:id",getPublisherByID);
 
 export default router;

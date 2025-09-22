@@ -9,6 +9,8 @@ import './index.css';
 import Books from './pages/Books';
 import Authors from './pages/Authors';
 import AuthorPage from './pages/AuthorPage';
+import Publishers from './pages/Publishers';
+import PublisherPage from './pages/PublisherPage';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -21,6 +23,8 @@ createRoot(document.getElementById('root')).render(
       <Route path="/aboutUs" element={<AboutUs />} />
       <Route path="/authors" element={<Authors />} />
       <Route path='/authors/:id' element={<AuthorPage />}/>
+      <Route path='/publishers' element={<Publishers />} />
+      <Route path='/publishers/:id' element={<PublisherPage />}/>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
