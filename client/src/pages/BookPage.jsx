@@ -36,7 +36,10 @@ const BookPage = () => {
   const [book, setBook] = useState(null);
   const [authorBooks, setAuthorBooks] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [downloadCount, setDownloadCount] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
   useEffect(() => {
     const fetchBookAndAuthor = async () => {
       try {
@@ -56,6 +59,24 @@ const BookPage = () => {
           const authorBooksRes = await axiosInstance.get(`/authors/${bookData.AuthorIDs}/books`);
           console.log(authorBooksRes.data?.data);
           setAuthorBooks(authorBooksRes.data?.data || []);
+        }
+
+        // Fetch likes and downloads counts of a book
+        const likesCountRes = await axiosInstance.get(`/books/likesCount/${id}`);
+        setLikesCount(likesCountRes.data?.data[0].total_likes);
+
+        const downloadCountRes = await axiosInstance.get(`/books/downloadCount/${id}`);
+        setDownloadCount(downloadCountRes.data?.data[0].total_downloads);
+        try {
+          const reviewsOfBookRes = await axiosInstance.get(`books/allReview/${id}`);
+          const reviewsData = reviewsOfBookRes.data?.data || [];
+          setReviews(reviewsData);
+          if (reviewsData.length > 0) {
+            const totalRating = reviewsData.reduce((sum, review) => sum + review.Rating, 0);
+            setAverageRating((totalRating / reviewsData.length).toFixed(1));
+          }
+        } catch (reviewsError) {
+          console.warn('Could not fetch reviews:', reviewsError.message);
         }
       } catch (error) {
         console.error('API call failed. Using fallback data. Error:', error.message);
@@ -121,19 +142,21 @@ const BookPage = () => {
                 <span className="text-[#A56F6E]">
                   <Star size={20} fill="#A56F6E" />
                 </span>
-                <span className="text-sm font-medium text-gray-600">4.5/5 (0 Reviews)</span>
+                <span className="text-sm font-medium text-gray-600">
+                  {averageRating}/5 ({reviews.length} Reviews)
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[#A56F6E]">
                   <ThumbsUp size={20} />
                 </span>
-                <span className="text-sm font-medium text-gray-600">123 Likes</span>
+                <span className="text-sm font-medium text-gray-600">{likesCount} Likes</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[#A56F6E]">
                   <Download size={20} />
                 </span>
-                <span className="text-sm font-medium text-gray-600">456 Downloads</span>
+                <span className="text-sm font-medium text-gray-600">{downloadCount} Downloads</span>
               </div>
             </div>
 
@@ -188,7 +211,7 @@ const BookPage = () => {
         </section>
 
         {/* Author Section */}
-        <section id="book-authors" className="max-w-7xl mx-auto px-6 py-12 bg-white">
+        <section id="book-authors" className="max-w-7xl mx-auto px-6 py-12 mb-10  bg-white">
           <h2
             className="text-2xl md:text-3xl font-serif text-center mb-6"
             style={{ color: '#A56F6E' }}
@@ -196,7 +219,12 @@ const BookPage = () => {
             About the Author
           </h2>
           <div className="flex justify-center">
-            <div onClick={()=>{navigate(`/authors/${book.AuthorIDs}`)}} className="flex flex-col md:flex-row items-center gap-6 max-w-4xl p-8 hover:rounded-lg hover:shadow-lg cursor-pointer bg-white">
+            <div
+              onClick={() => {
+                navigate(`/authors/${book.AuthorIDs}`);
+              }}
+              className="flex flex-col md:flex-row items-center gap-6 max-w-4xl p-8 hover:rounded-lg hover:shadow-lg cursor-pointer bg-white"
+            >
               <img
                 src={
                   book.Author_Images ||
@@ -213,12 +241,47 @@ const BookPage = () => {
           </div>
         </section>
 
+        {/* Reviews Section */}
+        <section className="bg-[#f2e4e3] py-12">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-2xl md:text-3xl font-serif text-center text-[#A56F6E] mb-6">
+              Reviews
+            </h2>
+            {reviews.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {reviews.map((review, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200"
+                  >
+                    <div className="flex items-center mb-4">
+                      <div className="text-[#A56F6E] flex items-center gap-2">
+                        {[...Array(review.Rating)].map((_, i) => (
+                          <Star key={i} size={16} fill="#A56F6E" />
+                        ))}({review.Rating})
+                      </div>
+                      <span className="ml-2 text-sm font-semibold text-gray-800">
+                        {review.VisitorName}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed mb-2">{review.Review_Text}</p>
+                    <p className="text-xs text-gray-400">
+                      Reviewed on {new Date(review.Review_Date).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500">No reviews yet.</p>
+            )}
+          </div>
+        </section>
         {/* You Might Also Like Section */}
         {authorBooks && authorBooks.length > 0 && (
           <section className=" py-12">
             <div className="max-w-7xl mx-auto px-6">
               <h2
-                className="text-2xl md:text-3xl font-serif text-center mb-6"
+                className="text-2xl md:text-3xl font-serif text-center"
                 style={{ color: '#A56F6E' }}
               >
                 More by this Author

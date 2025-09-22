@@ -74,3 +74,23 @@ export const getBookByIDQuery = `SELECT
         b.Book_ID = ?
         GROUP BY
         b.Book_ID;`;
+
+export const getLikesOfBookQuery = `SELECT COUNT(*) AS total_likes FROM Likes WHERE Book_ID = ?;`;
+
+export const getDownloadsOfBookQuery = `SELECT COUNT(*) AS total_downloads FROM Offline_Content WHERE Book_ID = ?;`;
+
+export const getReviewsOfABookQuery = `SELECT 
+  r.User_ID,
+  r.Review_Text,
+  r.Review_Date,
+  r.Rating,
+  v.Name AS VisitorName
+FROM Reviews r
+INNER JOIN User u
+  ON r.User_ID = u.User_ID
+INNER JOIN Visitor v
+  ON u.Visitor_ID = v.Visitor_ID
+WHERE 
+  r.Book_ID = ?
+ORDER BY
+r.Review_Date DESC;`;
