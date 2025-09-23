@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { useAuthStore } from '../stores/auth.Stores';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
+  const {User, isLoading, checkUserAuth} = useAuthStore();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
+  useEffect(() => {
+    console.log("User: ('Rohan Khanna', 'rohan.khanna@example.com', '2025-04-15', 'OpenSesame999!', NULL, 'India'),")
+  },[])
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginData({ ...loginData, [name]: value });
@@ -27,8 +31,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/users', loginData);
-      setUser(response.data);
+      checkUserAuth(loginData);
       setSuccessMessage('Login successful! 🎉');
       setLoginData({ email: '', password: '' });
     } catch (error) {
