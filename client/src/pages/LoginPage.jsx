@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import Footer from '../components/Footer';
-import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { useAuthStore } from '../stores/auth.Stores';
 
 const Login = () => {
   const navigate = useNavigate();
-  const {User, isLoading, checkUserAuth} = useAuthStore();
+  const { checkUserAuth, isLoading, User } = useAuthStore();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    console.log("User: ('Rohan Khanna', 'rohan.khanna@example.com', '2025-04-15', 'OpenSesame999!', NULL, 'India'),")
-  },[])
+    if (User) {
+      navigate('/profile');
+    }
+    console.log(
+      "('Rohan Khanna', 'rohan.khanna@example.com', '2025-04-15', 'OpenSesame999!', NULL, 'India'),"
+    );
+  }, [User, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginData({ ...loginData, [name]: value });
@@ -22,30 +27,29 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     const { email, password } = loginData;
 
     if (!email || !password) {
-      setSuccessMessage('');
-      alert('Please fill in all required fields!');
+      setErrorMessage('Please fill in all required fields!');
       return;
     }
 
     try {
-      checkUserAuth(loginData);
-      setSuccessMessage('Login successful! 🎉');
+      await checkUserAuth(loginData);
       setLoginData({ email: '', password: '' });
     } catch (error) {
-      console.log(error);
-      setSuccessMessage('Login failed. Please try again.');
+      setErrorMessage('Login failed. Please check your credentials.');
+      console.error(error);
     }
   };
 
   return (
-    <div>
+    <>
       <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-center items-center px-6 py-10 relative">
         {/* Navigation to home */}
         <div className="flex items-center space-x-4 absolute top-4 left-4 z-10">
-          <ChevronLeft className="h-4 w-4  cursor-pointer" />
+          <ChevronLeft className="h-4 w-4 cursor-pointer" onClick={() => navigate('/')} />
           <span onClick={() => navigate('/')} className="text-[#A56F6E] cursor-pointer">
             Home
           </span>
@@ -73,8 +77,8 @@ const Login = () => {
             Access your <b>Digital Library</b> account
           </p>
 
-          {/* Success Message */}
-          {successMessage && <p className="text-center text-green-600 mb-4">{successMessage}</p>}
+          {/* Error Message */}
+          {errorMessage && <p className="text-center text-red-500 mb-4">{errorMessage}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
@@ -117,10 +121,20 @@ const Login = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="mt-3 w-full px-6 py-3 text-lg font-semibold text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#A56F6E] focus:ring-opacity-50"
+              disabled={isLoading}
+              className={`mt-3 w-full px-6 py-3 text-lg font-semibold text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#A56F6E] focus:ring-opacity-50 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               style={{ backgroundColor: '#A56F6E' }}
             >
-              Log In
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  <span className="ml-2">Logging in...</span>
+                </div>
+              ) : (
+                <>
+                  Log In <ArrowRight className="inline-block h-5 w-5 ml-2" />
+                </>
+              )}
             </button>
           </form>
 
@@ -133,9 +147,8 @@ const Login = () => {
           </p>
         </div>
       </div>
-
       <Footer />
-    </div>
+    </>
   );
 };
 
