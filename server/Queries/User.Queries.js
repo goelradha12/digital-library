@@ -16,3 +16,51 @@ JOIN
 WHERE 
     Email = ? 
     AND Password = SHA2(?, 256);`;
+
+export const getAllLikedBooksQuery = `SELECT
+    b.Book_ID,
+    b.Title,
+    b.Publication_Year,
+    b.No_of_Pages,
+    b.Cover_Image,
+    GROUP_CONCAT(DISTINCT a.Author_Name) AS Authors,
+    GROUP_CONCAT(DISTINCT c.Category_Name) AS Categories
+FROM Likes l
+INNER JOIN Book b ON l.Book_ID = b.Book_ID
+LEFT JOIN Book_To_Author bta ON b.Book_ID = bta.Book_ID
+LEFT JOIN Author a ON bta.Author_ID = a.Author_ID
+LEFT JOIN Book_To_Category btc ON b.Book_ID = btc.Book_ID
+LEFT JOIN Category c ON btc.Category_ID = c.Category_ID
+WHERE l.User_ID = ?
+GROUP BY b.Book_ID;`;
+
+export const getAllDownloadedBooksQuery = `SELECT
+    b.Book_ID,
+    b.Title,
+    b.Publication_Year,
+    b.No_of_Pages,
+    b.Cover_Image,
+    GROUP_CONCAT(DISTINCT a.Author_Name) AS Authors,
+    GROUP_CONCAT(DISTINCT c.Category_Name) AS Categories
+FROM Offline_Content oc
+INNER JOIN Book b ON oc.Book_ID = b.Book_ID
+LEFT JOIN Book_To_Author bta ON b.Book_ID = bta.Book_ID
+LEFT JOIN Author a ON bta.Author_ID = a.Author_ID
+LEFT JOIN Book_To_Category btc ON b.Book_ID = btc.Book_ID
+LEFT JOIN Category c ON btc.Category_ID = c.Category_ID
+WHERE oc.User_ID = ?
+GROUP BY b.Book_ID;`;
+
+export const getAllReviewsQuery = `SELECT
+    r.Review_Text,
+    r.Review_Date,
+    r.Rating,
+    b.Book_ID,
+    b.Title,
+    b.Cover_Image
+FROM Reviews r
+INNER JOIN Book b ON r.Book_ID = b.Book_ID
+WHERE r.User_ID = ?
+ORDER BY r.Review_Date DESC;`;
+
+export const checkUserByIDQuery = `SELECT * FROM User WHERE User_ID = ?;` 

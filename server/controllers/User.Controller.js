@@ -1,4 +1,4 @@
-import { checkAVisitorQuery } from "../Queries/User.Queries.js";
+import { checkAVisitorQuery, getAllLikedBooksQuery } from "../Queries/User.Queries.js";
 import { apiError } from "../utils/api.error.js";
 import { apiResponse } from "../utils/api.response.js";
 import { dbquery } from "../utils/db.helper.js";
@@ -17,6 +17,37 @@ export async function getVisitor(req, res, next) {
     res.json(new apiResponse(200, result[0], "Visitor fetched Successfully"));
   } catch (error) {
     console.log(error)
+    next(error);
+  }
+}
+
+export async function getAllLikedBooks(req, res, next) {
+  try {
+    const userID = req.params.id;
+    if (!userID) {
+      throw new apiError(400, "User ID is required");
+    }
+    const result = await dbquery(getAllLikedBooksQuery, [userID.trim()]);
+    console.log(result);
+    if(!result.length) {
+      throw new apiError(404, "No liked books found");
+    }
+    res.json(new apiResponse(200, result, "Liked books fetched Successfully"));
+  } catch (error) {
+    next(error);
+  }
+}
+export async function getAllDownloadedBooks(req, res, next) {
+  try {
+    
+  } catch (error) {
+    next(error);
+  }
+}
+export async function getAllReviews(req, res, next) {
+  try {
+    
+  } catch (error) {
     next(error);
   }
 }

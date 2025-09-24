@@ -16,7 +16,7 @@ const Login = () => {
       navigate('/profile');
     }
     console.log(
-      "('Rohan Khanna', 'rohan.khanna@example.com', '2025-04-15', 'OpenSesame999!', NULL, 'India'),"
+      "('Arjun Reddy', 'arjun.reddy@example.com', '2025-04-06', 'Pass432!', NULL, 'India')"
     );
   }, [User, navigate]);
 
