@@ -1,104 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import {
-  ThumbsUp,
-  Download,
-  Star,
-  BookOpen,
-  Heart,
-  ClipboardList,
-  Book,
-  Award,
-  UserCheck,
-} from 'lucide-react';
-import { useEffect } from 'react';
+import { ThumbsUp, Download, Star, BookOpen, Heart, UserCheck } from 'lucide-react';
 import { useAuthStore } from '../stores/auth.Stores';
 import { axiosInstance } from '../utils/axios';
-
-const fallbackUserData = {
-  Accessibility_Settings: {
-    Bold: '2',
-    'Font-Size': '8',
-    'Color-Contrast': '7:1',
-    'Text-to-Speech': 'No',
-  },
-  Avatar: null,
-  Country: 'India',
-  Email: 'rohan.khanna@example.com',
-  Name: 'Rohan Khanna',
-  Password: '629d6360ee443cd975fd99adb240bff437d5f325a43ee50f818fed130e164818',
-  Registration_Date: '2025-04-14T18:30:00.000Z',
-  Reward_Points: 10,
-  Start_Date: '2025-04-18T18:30:00.000Z',
-  User_ID: 'USE000000004',
-  Visitor_ID: 'VIS000000009',
-};
+import BookCard from '../components/BookCard';
 
 // Static lists for demonstration
-const likedBooks = [
-  {
-    title: 'The Midnight Library',
-    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+1',
-  },
-  { title: 'Project Hail Mary', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+2' },
-  {
-    title: 'Where the Crawdads Sing',
-    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+3',
-  },
-];
-
-const downloadedBooks = [
-  { title: 'A Game of Thrones', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+4' },
-  {
-    title: 'To Kill a Mockingbird',
-    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+5',
-  },
-];
-
-const reviewsGiven = [
-  {
-    bookTitle: 'The Midnight Library',
-    rating: 5,
-    reviewText: 'An amazing read that makes you think about life and choices.',
-  },
-  {
-    bookTitle: 'Project Hail Mary',
-    rating: 4,
-    reviewText: 'A fantastic sci-fi adventure, hard to put down!',
-  },
-];
-
 const aiRecommendations = [
-  { title: 'The Martian', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+6' },
-  { title: 'Dune', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+7' },
+  {
+    title: 'The Martian',
+    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+6',
+  },
+  {
+    title: 'Dune',
+    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+7',
+  },
 ];
 
 const booksRead = [
-  { title: 'Harry Potter', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+8' },
-  { title: 'The Hobbit', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+9' },
-  { title: '1984', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+10' },
-  { title: 'Brave New World', cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+11' },
+  {
+    title: 'Harry Potter',
+    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+8',
+  },
+  {
+    title: 'The Hobbit',
+    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+9',
+  },
+  {
+    title: '1984',
+    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+10',
+  },
+  {
+    title: 'Brave New World',
+    cover: 'https://placehold.co/120x180/F0F0F0/A56F6E?text=Book+11',
+  },
 ];
 
 const UserProfile = () => {
-
   const { User } = useAuthStore();
+  const [likedBooks, setLikedBooks] = useState([]);
+  const [downloadedBooks, setDownloadedBooks] = useState([]);
+  const [reviewsGiven, setReviewsGiven] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    // Getting liked books of a user
-    const fetchLikedBooks = async () => {
+    const fetchUserData = async () => {
+      if (!User) {
+        setLoading(false);
+        return;
+      }
+      const userId = User.User_ID;
       try {
-        const response = await axiosInstance.get(`/users/likedBooks/${User.User_ID}`);
-        console.log(response.data.data);
+        const likedBookRes = await axiosInstance.get(`/users/likedBooks/${userId}`);
+        setLikedBooks(likedBookRes.data.data);
       } catch (error) {
         console.error('Error fetching liked books:', error);
       }
-    }
-    if(User){
-      fetchLikedBooks();
-    }
-  }, [User])
-  const user = fallbackUserData;
+      try {
+        const downloadedBookRes = await axiosInstance.get(`/users/downloadedBooks/${userId}`);
+        setDownloadedBooks(downloadedBookRes.data.data);
+      } catch (error) {
+        console.error('Error fetching downloaded books:', error);
+      }
+      try {
+        const reviewdBookRes = await axiosInstance.get(`users/reviewdBooks/${userId}`);
+        setReviewsGiven(reviewdBookRes.data.data);
+      } catch (error) {
+        console.error('Error fetching reviews', error);
+      }
+    };
+
+    fetchUserData();
+  }, [User]);
 
   const getInitials = (name) => {
     if (!name) return '';
@@ -108,14 +82,22 @@ const UserProfile = () => {
     return `${firstInitial}${lastInitial}`.toUpperCase();
   };
 
-  const initials = getInitials(user.Name);
-  const isSubscriber = user.User_ID !== null;
+  const initials = getInitials(User?.Name);
+  const isSubscriber = User?.User_ID !== null;
 
   const ctaMessage = {
     title: 'Unlock Your Digital Library',
     description: 'Become a subscriber to get access to exclusive content, rewards, and more!',
     buttonText: 'Subscribe Now',
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-800">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-400"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -125,9 +107,9 @@ const UserProfile = () => {
           {/* Sidebar */}
           <aside className="lg:w-1/4 bg-white rounded-xl shadow-lg p-8 h-fit">
             <div className="flex flex-col items-center text-center mb-6">
-              {user.Avatar ? (
+              {User?.Avatar ? (
                 <img
-                  src={user.Avatar}
+                  src={User.Avatar}
                   alt="User Avatar"
                   className="w-32 h-32 rounded-full object-cover border-4 border-[#A56F6E] shadow-md"
                 />
@@ -136,22 +118,22 @@ const UserProfile = () => {
                   {initials}
                 </div>
               )}
-              <h1 className="text-3xl font-serif text-gray-900 mt-6">{user.Name}</h1>
-              <p className="text-sm text-gray-500">{user.Email}</p>
+              <h1 className="text-3xl font-serif text-gray-900 mt-6">{User?.Name}</h1>
+              <p className="text-sm text-gray-500">{User?.Email}</p>
             </div>
             <div className="space-y-4">
               <h2 className="text-xl font-serif font-medium text-[#A56F6E]">Account Details</h2>
               <div className="space-y-3 text-gray-600 text-sm">
                 <p>
-                  <span className="font-semibold text-gray-800">Country:</span> {user.Country}
+                  <span className="font-semibold text-gray-800">Country:</span> {User?.Country}
                 </p>
                 <p>
                   <span className="font-semibold text-gray-800">Member Since:</span>{' '}
-                  {new Date(user.Registration_Date).toLocaleDateString()}
+                  {new Date(User?.Registration_Date).toLocaleDateString()}
                 </p>
                 <p>
                   <span className="font-semibold text-gray-800">Reward Points:</span>{' '}
-                  {user.Reward_Points}
+                  {User?.Reward_Points}
                 </p>
               </div>
             </div>
@@ -187,20 +169,29 @@ const UserProfile = () => {
                       <Heart size={24} /> <span>Liked Books</span>
                     </div>
                     <span className="text-sm font-semibold text-gray-600">
-                      {likedBooks.length} Likes
+                      {likedBooks.length} items
                     </span>
                   </h2>
                   <div className="flex gap-6 overflow-x-auto whitespace-nowrap py-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-                    {likedBooks.map((book) => (
-                      <div key={book.title} className="w-24 flex-shrink-0 text-center">
-                        <img
-                          src={book.cover}
-                          alt={book.title}
-                          className="w-full h-36 object-cover rounded-md shadow-md mb-2"
-                        />
-                        <p className="text-xs font-medium text-gray-700 truncate">{book.title}</p>
-                      </div>
-                    ))}
+                    {likedBooks.length > 0 ? (
+                      likedBooks.map((book) => (
+                        <div key={book.Book_ID} className="w-24 flex-shrink-0 text-center">
+                          <img
+                            src={book.Cover_Image || `/unzipped_books/${book.Book_ID}.jpg`}
+                            alt={book.Title}
+                            className="w-full h-36 object-cover rounded-md shadow-md mb-2"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                'https://placehold.co/120x180/F0F0F0/A56F6E?text=Cover+Unavailable';
+                            }}
+                          />
+                          <p className="text-xs font-medium text-gray-700 truncate">{book.Title}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-center text-gray-500 w-full py-4">No liked books yet.</p>
+                    )}
                   </div>
                 </section>
 
@@ -211,20 +202,31 @@ const UserProfile = () => {
                       <Download size={24} /> <span>Downloaded Books</span>
                     </div>
                     <span className="text-sm font-semibold text-gray-600">
-                      {downloadedBooks.length} Downloads
+                      {downloadedBooks.length} items
                     </span>
                   </h2>
                   <div className="flex gap-6 overflow-x-auto whitespace-nowrap py-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-                    {downloadedBooks.map((book) => (
-                      <div key={book.title} className="w-24 flex-shrink-0 text-center">
-                        <img
-                          src={book.cover}
-                          alt={book.title}
-                          className="w-full h-36 object-cover rounded-md shadow-md mb-2"
-                        />
-                        <p className="text-xs font-medium text-gray-700 truncate">{book.title}</p>
-                      </div>
-                    ))}
+                    {downloadedBooks.length > 0 ? (
+                      downloadedBooks.map((book) => (
+                        <div key={book.Book_ID} className="w-24 flex-shrink-0 text-center">
+                          <img
+                            src={book.Cover_Image || `/unzipped_books/${book.Book_ID}.jpg`}
+                            alt={book.Title}
+                            className="w-full h-36 object-cover rounded-md shadow-md mb-2"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                'https://placehold.co/120x180/F0F0F0/A56F6E?text=Cover+Unavailable';
+                            }}
+                          />
+                          <p className="text-xs font-medium text-gray-700 truncate">{book.Title}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-center text-gray-500 w-full py-4">
+                        No downloaded books yet.
+                      </p>
+                    )}
                   </div>
                 </section>
 
@@ -239,16 +241,28 @@ const UserProfile = () => {
                     </span>
                   </h2>
                   <div className="space-y-6">
-                    {reviewsGiven.map((review, index) => (
-                      <div key={index} className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                        <div className="flex items-center mb-2">
-                          {[...Array(review.rating)].map((_, i) => (
-                            <Star key={i} size={16} fill="#A56F6E" className="text-[#A56F6E]" />
-                          ))}
+                    {reviewsGiven.length > 0 ? (
+                      reviewsGiven.map((review, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-50 p-6 rounded-lg border border-gray-200"
+                        >
+                          <div className="flex items-center mb-2">
+                            {[...Array(review.Rating)].map((_, i) => (
+                              <Star key={i} size={16} fill="#A56F6E" className="text-[#A56F6E]" />
+                            ))}
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed">
+                            {review.Review_Text}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-2">
+                            Reviewed on {new Date(review.Review_Date).toLocaleDateString()}
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-700 leading-relaxed">{review.reviewText}</p>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-center text-gray-500 w-full py-4">No reviews given yet.</p>
+                    )}
                   </div>
                 </section>
 

@@ -15,8 +15,9 @@ const Login = () => {
     if (User) {
       navigate('/profile');
     }
+
     console.log(
-      "('Arjun Reddy', 'arjun.reddy@example.com', '2025-04-06', 'Pass432!', NULL, 'India')"
+      "('Evelyn Lewis', 'evelyn.lewis@example.com', '2025-04-07', 'FinalStep123!', NULL, 'United States'),"
     );
   }, [User, navigate]);
 
