@@ -1,15 +1,31 @@
 import React from "react";
 import { Linkedin, Github } from "lucide-react";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 const AboutUs = () => {
-  return (<div>
-    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200 min-h-screen py-12 px-6">
+  return (
+    <>
+
+      <Header />
+   
+      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col items-center px-6 py-12">
+        {/* Background pattern */}
+        <div
+          className="absolute inset-0 bg-repeat"
+          style={{
+            backgroundImage: "url('/bookshelf-pattern.svg')",
+            backgroundSize: '100px',
+            opacity: 0.1,
+            zIndex: 0,
+          }}
+        ></div>
+
       {/* Hero Section */}
-      <header className="text-center mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-transparent  bg-gradient-to-r from-blue-500 via-purple-00 to-purple-900 bg-clip-text">
+      <header className="relative max-w-3xl text-center mb-12 bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-8 w-full z-10 mt-15">
+        <h1 className="text-3xl md:text-4xl font-serif text-[#A56F6E] mb-4">
           Digital Library Management System
         </h1>
-        <p className="mt-4 text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+        <p className="text-gray-600 text-sm md:text-base leading-relaxed">
           The <b>Digital Library Management System (DLMS)</b> is designed to
           revolutionize how students, faculty, and administrators access and
           manage knowledge. Centralized, secure, and user-friendly.
@@ -17,8 +33,8 @@ const AboutUs = () => {
       </header>
 
       {/* Objectives Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-blue-400 mb-6 text-center">
+      <section className="relative max-w-6xl w-full mb-12 z-10">
+        <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6 text-center">
           Objectives
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -42,20 +58,18 @@ const AboutUs = () => {
           ].map((obj, i) => (
             <div
               key={i}
-              className="bg-white/5 backdrop-blur-md p-4 rounded-xl shadow-lg hover:shadow-blue-500/20 transition"
+              className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 hover:shadow-[#A56F6E]/50 transition"
             >
-              <h3 className="text-lg font-semibold text-blue-300 mb-2">
-                {obj.title}
-              </h3>
-              <p className="text-gray-400 text-sm">{obj.desc}</p>
+              <h3 className="text-lg font-semibold text-[#A56F6E] mb-2">{obj.title}</h3>
+              <p className="text-gray-600 text-sm">{obj.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Future Enhancements */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-blue-400 mb-6 text-center">
+      <section className="relative max-w-6xl w-full mb-12 z-10">
+        <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6 text-center">
           Future Enhancements
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -79,23 +93,21 @@ const AboutUs = () => {
           ].map((enhance, i) => (
             <div
               key={i}
-              className="bg-white/5 backdrop-blur-md p-4 rounded-xl shadow-lg hover:shadow-purple-500/20 transition"
+              className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 hover:shadow-[#A56F6E]/50 transition"
             >
-              <h3 className="text-lg font-semibold text-purple-300 mb-2">
-                {enhance.title}
-              </h3>
-              <p className="text-gray-400 text-sm">{enhance.desc}</p>
+              <h3 className="text-lg font-semibold text-[#A56F6E] mb-2">{enhance.title}</h3>
+              <p className="text-gray-600 text-sm">{enhance.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Team Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-blue-400 mb-6 text-center">
+      <section className="relative max-w-6xl w-full mb-12 z-10">
+        <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6 text-center">
           Team Members
         </h2>
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
               name: "Surbhi Kumari",
@@ -137,34 +149,30 @@ const AboutUs = () => {
           ].map((member, i) => (
             <div
               key={i}
-              className="bg-white/5 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-blue-500/20 transition transform hover:scale-105"
+              className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 flex flex-col items-center space-y-4 hover:shadow-[#A56F6E]/50 transition transform hover:scale-105"
             >
-              <div className="flex flex-col items-center space-y-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
-                  {member.name.charAt(0)}
-                </div>
-                <h3 className="text-lg font-semibold text-blue-300">
-                  {member.name}
-                </h3>
-                <p className="text-sm text-gray-400">{member.role}</p>
-                <div className="flex space-x-4 text-gray-400">
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-blue-400"
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                  <a
-                    href={member.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-white"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
-                </div>
+              <div className="w-20 h-20 rounded-full bg-[#A56F6E] flex items-center justify-center text-white font-bold text-xl">
+                {member.name.charAt(0)}
+              </div>
+              <h3 className="text-lg font-semibold text-[#A56F6E]">{member.name}</h3>
+              <p className="text-gray-600 text-sm">{member.role}</p>
+              <div className="flex space-x-4 text-gray-500">
+                <a
+                  href={member.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#A56F6E]"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href={member.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gray-800"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
               </div>
             </div>
           ))}
@@ -172,16 +180,14 @@ const AboutUs = () => {
       </section>
 
       {/* Tech Stack */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-blue-400 mb-6 text-center">
-          Technology Stack
-        </h2>
+      <section className="relative max-w-6xl w-full mb-12 z-10 text-center">
+        <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6">Technology Stack</h2>
         <div className="flex flex-wrap justify-center gap-4">
           {["React", "Node.js", "Express", "MongoDB", "Analytics & AI"].map(
             (tech, i) => (
               <div
                 key={i}
-                className="bg-white/5 px-4 py-2 rounded-lg shadow hover:shadow-blue-400/20 transition"
+                className="bg-white rounded-2xl px-4 py-2 shadow-lg shadow-[#A56F6E]/30 hover:shadow-[#A56F6E]/50 transition"
               >
                 {tech}
               </div>
@@ -190,12 +196,9 @@ const AboutUs = () => {
         </div>
       </section>
 
-    </div>
+      </div>
       <Footer />
-    </div>
-
-
-
+    </>
   );
 };
 
