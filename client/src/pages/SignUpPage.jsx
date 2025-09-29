@@ -3,6 +3,7 @@ import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { axiosInstance } from '../utils/axios';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -27,28 +28,14 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, country, avatar } = signupData;
-
-    if (!name || !email || !password || !country) {
-      setSuccessMessage('');
-      alert('Please fill in all required fields!');
-      return;
-    }
-
     try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('email', email);
-      formData.append('password', password);
-      formData.append('country', country);
-      if (avatar) formData.append('avatar', avatar);
-
-      const response = await axios.post('http://localhost:5000/users/signup', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      setSuccessMessage('Signup successful! 🎉');
-      setSignupData({ name: '', email: '', password: '', avatar: null, country: '' });
+      console.log(signupData);
+      const response = await axiosInstance.post('/users/registerVisitor', signupData);
+      console.log(response.data);
+      if (response.data.statusCode == 200) {
+        setSuccessMessage('Signup successful! 🎉');
+        setSignupData({ name: '', email: '', password: '', avatar: null, country: '' });
+      } else setSuccessMessage('Signup failed. Please try again.');
     } catch (error) {
       console.log(error);
       setSuccessMessage('Signup failed. Please try again.');
@@ -155,10 +142,9 @@ const Signup = () => {
               >
                 <option value="">Select your country</option>
                 <option value="India">India</option>
-                <option value="USA">USA</option>
-                <option value="UK">UK</option>
-                <option value="Canada">Canada</option>
-                <option value="Australia">Australia</option>
+                <option value="USA">United States</option>
+                <option value="UK">Italy</option>
+                <option value="Canada">France</option>
               </select>
             </div>
 

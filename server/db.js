@@ -4,7 +4,7 @@ const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: "Library_Management",
+  database: process.env.DB_NAME,
   multipleStatements: true,
   charset: "utf8mb4",
   decimalNumbers: true,
@@ -13,12 +13,12 @@ const pool = mysql.createPool({
 pool
   .getConnection()
   .then((conn) => {
-    const res = conn.query("SELECT 1");
+    const res = conn.query("SELECT 1;");
     conn.release();
     return res;
   })
   .then((results) => {
-    console.log("Connected to MySQL DB");
+    console.log("Connected to MySQL DB", results);
   })
   .catch((err) => {
     console.log(err);

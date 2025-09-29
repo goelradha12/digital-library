@@ -1,8 +1,10 @@
 import {
+  checkAVisitorEmailQuery,
   checkAVisitorQuery,
   getAllDownloadedBooksQuery,
   getAllLikedBooksQuery,
   getAllReviewsQuery,
+  insertAVisitorQuery,
 } from "../Queries/User.Queries.js";
 import { apiError } from "../utils/api.error.js";
 import { apiResponse } from "../utils/api.response.js";
@@ -19,7 +21,15 @@ export async function getVisitor(req, res, next) {
       throw new apiError(404, "Visitor not found");
     }
     console.log(result);
-    res.json(new apiResponse(200, result[0], "Visitor fetched Successfully"));
+    const data = {
+      Visitor_ID: result[0].Visitor_ID,
+      Name: result[0].Name,
+      Email: result[0].Email,
+      Registration_Date: result[0].Registration_Date,
+      Country: result[0].Country,
+      Avatar: result[0].Avatar,
+    }
+    res.json(new apiResponse(200, data, "Visitor fetched Successfully"));
   } catch (error) {
     console.log(error);
     next(error);
@@ -71,6 +81,29 @@ export async function getAllReviews(req, res, next) {
       throw new apiError(404, "No reviews found");
     }
     res.json(new apiResponse(200, result, "Reviews fetched Successfully"));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function registerVisitor(req, res, next) {
+  try {
+    const { name, email, password, country, avatar } = req.body;
+    if (!name || !email || !password) {
+      throw new apiError(400, "name, email and Password are required");
+    }
+    const result = await dbquery(checkAVisitorEmailQuery, [email]);
+    // console.log(result)
+    if (result.length) {
+      throw new apiError(400, "User already exists");
+    }
+    const response = await dbquery(insertAVisitorQuery, [
+      name,
+      email,
+      password,
+      country,
+    ]);
+    res.json(new apiResponse(200, response, "Visitor registered Successfully"));
   } catch (error) {
     next(error);
   }

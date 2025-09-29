@@ -1,11 +1,12 @@
-export const insertAVisitorQuery = `INSERT INTO Visitor ( Name, Email, Registration_Date, Password, Country)
-VALUES (?, ?, ?, ?, ?);`;
+export const insertAVisitorQuery = `INSERT INTO Visitor ( Name, Email, Password, Country)
+VALUES (?, ?, ?, ?);`;
 // VALUES ('John Doe', 'VH6Z0@example.com, '2025-04-25', 'password123', 'India');
+
+// verify if email is already registered as visitor
+export const checkAVisitorEmailQuery = `SELECT * FROM Visitor WHERE Email = ?;`;
 
 // get email and password
 export const checkAVisitorQuery = `SELECT * FROM Visitor v
-JOIN
-	User u ON v.Visitor_ID = u.Visitor_ID
 WHERE 
     Email = ?
     AND Password = SHA2(?, 256);`;
@@ -63,4 +64,4 @@ INNER JOIN Book b ON r.Book_ID = b.Book_ID
 WHERE r.User_ID = ?
 ORDER BY r.Review_Date DESC;`;
 
-export const checkUserByIDQuery = `SELECT * FROM User WHERE User_ID = ?;` 
+export const checkUserByIDQuery = `SELECT * FROM User WHERE User_ID = ?;`;
