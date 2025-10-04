@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useAuthStore } from '../stores/auth.Stores';
 
 const HomePage = () => {
   const navigate = useNavigate();
-
+  const {Visitor, checkUserAuth, User} = useAuthStore();
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        console.log(Visitor)
+        await checkUserAuth(Visitor.Visitor_ID);
+        console.log("User fetched")
+      } catch (error) {
+        console.log("You are not subscribed", error);
+      }
+    }
+    if(Visitor){
+      checkUser();
+    }
+  }, [Visitor]);
   return (
     <>
       <Header />

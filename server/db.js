@@ -18,7 +18,7 @@ pool
     return res;
   })
   .then((results) => {
-    console.log("Connected to MySQL DB", results);
+    console.log("Connected to MySQL DB");
   })
   .catch((err) => {
     console.log(err);

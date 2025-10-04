@@ -1,4 +1,5 @@
 import {
+  checkAUserByVisitorIDQuery,
   checkAVisitorEmailQuery,
   checkAVisitorQuery,
   getAllDownloadedBooksQuery,
@@ -33,6 +34,23 @@ export async function getVisitor(req, res, next) {
   } catch (error) {
     console.log(error);
     next(error);
+  }
+}
+
+export async function getUserByVisitorID(req, res, next) {
+  try {
+    const visitorID = req.params.id;
+    if (!visitorID) {
+      throw new apiError(400, "Visitor ID is required");
+    }
+    const result = await dbquery(checkAUserByVisitorIDQuery, [visitorID.trim()]);
+    if (!result.length) {
+      throw new apiError(404, "User not found");
+    }
+    // console.log(result);
+    res.json(new apiResponse(200, result[0], "User data fetched Successfully"));
+  } catch (error) {
+    next(error)
   }
 }
 

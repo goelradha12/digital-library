@@ -35,6 +35,7 @@ const Signup = () => {
       if (response.data.statusCode == 200) {
         setSuccessMessage('Signup successful! 🎉');
         setSignupData({ name: '', email: '', password: '', avatar: null, country: '' });
+        navigate('/login');
       } else setSuccessMessage('Signup failed. Please try again.');
     } catch (error) {
       console.log(error);

@@ -9,10 +9,9 @@ const Header = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const navigate = useNavigate();
-  const {User: currentUser, isLoading } = useAuthStore();
+  const {Visitor: currentUser, isLoading } = useAuthStore();
   const isAuthenticated = currentUser !== null;
-  console.log(currentUser);
-  const userInitials = isAuthenticated ? currentUser.Name.split(' ').map(n => n[0]).join('').toUpperCase() : null;
+  const userInitials = isAuthenticated ? currentUser.Name?.split(' ').map(n => n[0]).join('').toUpperCase() : null;
 
   useEffect(() => {
     const handleScroll = () => {

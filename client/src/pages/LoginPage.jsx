@@ -6,20 +6,16 @@ import { useAuthStore } from '../stores/auth.Stores';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { checkUserAuth, isLoading, User } = useAuthStore();
+  const { isLoading, Visitor, checkVisitorAuth, checkUserAuth } = useAuthStore();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    if (User) {
-      navigate('/profile');
-    }
-
     console.log(
       "('Evelyn Lewis', 'evelyn.lewis@example.com', '2025-04-07', 'FinalStep123!', NULL, 'United States'),"
     );
-  }, [User, navigate]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,8 +33,11 @@ const Login = () => {
     }
 
     try {
-      await checkUserAuth(loginData);
+      await checkVisitorAuth(loginData);
+      console.log("Data fetched")
+      
       setLoginData({ email: '', password: '' });
+      navigate('/');
     } catch (error) {
       setErrorMessage('Login failed. Please check your credentials.');
       console.error(error);

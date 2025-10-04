@@ -3,6 +3,7 @@ import {
   getAllDownloadedBooks,
   getAllLikedBooks,
   getAllReviews,
+  getUserByVisitorID,
   getVisitor,
   registerVisitor,
 } from "../controllers/User.Controller.js";
@@ -12,6 +13,7 @@ import { visitorRegistrationValidator } from "../validators/User.Validators.js";
 const router = Router();
 
 router.post("/", getVisitor);
+router.get("/getUser/:id", getUserByVisitorID);
 
 // Books data related to user goes here
 router.get("/likedBooks/:id", getAllLikedBooks);

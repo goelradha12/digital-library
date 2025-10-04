@@ -11,6 +11,8 @@ WHERE
     Email = ?
     AND Password = SHA2(?, 256);`;
 
+export const checkAUserByVisitorIDQuery = `SELECT * FROM User WHERE Visitor_ID = ?;`;
+
 export const checkAUserQuery = `SELECT * FROM User u
 JOIN
     Visitor v ON u.Visitor_ID = v.Visitor_ID
