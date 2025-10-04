@@ -55,7 +55,7 @@ const Authors = () => {
         const response = await axiosInstance.get('/authors/all');
         if (response.data?.data) {
           setAuthors(response.data.data);
-          console.log(response.data.data)
+          console.log(response.data.data);
         } else {
           throw new Error('No data found in response.');
         }

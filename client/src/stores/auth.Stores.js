@@ -19,11 +19,11 @@ export const useAuthStore = create((set) => ({
 
   checkUserAuth: async (id) => {
     try {
-      console.log('Fetching User...',id);
+      console.log('Fetching User...', id);
       set({ isLoading: true });
       const response = await axiosInstance.get(`/users/getUser/${id}`);
       set({ User: response.data.data });
-      console.log(response.data)
+      console.log(response.data);
     } catch (error) {
       console.log(error);
       set({ User: null });

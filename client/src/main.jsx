@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/publishers" element={<Publishers />} />
       <Route path="/publishers/:id" element={<PublisherPage />} />
       <Route path="/userProfile" element={<UserProfile />} />
-      <Route path="/accessibility" element={<Accessibility/>} />
+      <Route path="/accessibility" element={<Accessibility />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>

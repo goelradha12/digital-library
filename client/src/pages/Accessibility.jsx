@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Accessibility = () => {
-  return (
-    <div>
-      Accessiblity Form
-    </div>
-  )
-}
+  return <div>Accessiblity Form</div>;
+};
 
-export default Accessibility
+export default Accessibility;

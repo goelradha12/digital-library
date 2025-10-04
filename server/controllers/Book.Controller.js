@@ -72,7 +72,7 @@ export async function getAllReviewsOfBook(req, res, next) {
       throw new apiError(400, "BookID is required");
     }
     const result = await dbquery(getReviewsOfABookQuery, [bookID]);
-    if(result.length === 0) {
+    if (result.length === 0) {
       throw new apiError(404, "No reviews found for this book");
     }
     res.json(new apiResponse(200, result, "Reviews fetched successfully"));

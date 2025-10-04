@@ -258,7 +258,8 @@ const BookPage = () => {
                       <div className="text-[#A56F6E] flex items-center gap-2">
                         {[...Array(review.Rating)].map((_, i) => (
                           <Star key={i} size={16} fill="#A56F6E" />
-                        ))}({review.Rating})
+                        ))}
+                        ({review.Rating})
                       </div>
                       <span className="ml-2 text-sm font-semibold text-gray-800">
                         {review.VisitorName}

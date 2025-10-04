@@ -115,10 +115,10 @@ const AuthorPage = () => {
     const fetchAuthorData = async () => {
       try {
         // Fetch author details
-        console.log("Fetching author: ", id);
+        console.log('Fetching author: ', id);
         const authorRes = await axiosInstance.get(`/authors/${id}`);
 
-        console.log(authorRes.data)
+        console.log(authorRes.data);
         const authorData = authorRes.data?.data?.[0];
 
         if (!authorData) {

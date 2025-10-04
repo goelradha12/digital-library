@@ -8,8 +8,40 @@ import CarouselSection from '../components/BookCarousel';
 // Fallback data for local development if the API is down
 const fallbackPublisher = { Publisher_ID: 'PUB000000002', Publisher_Name: 'HarperCollins' };
 const fallbackBooks = [
-  { Accession_No: '1997001ROWH.002', AuthorIDs: 'AUT000000002', Authors: 'Rowling, J.K.', Book_ID: 'B00000000004', Book_Summary: 'First novel in the Harry Potter series.', Categories: 'Fantasy, Adventure', Cover_Image: null, ISBN_No: '9780747532743', ISSN_No: null, Language: 'English', No_of_Pages: 223, Publication_Year: '1997', PublisherID: 'PUB000000002', PublisherName: 'HarperCollins', Title: "Harry Potter and the Philosopher's Stone" },
-  { Accession_No: '2011001MANT.001', AuthorIDs: 'AUT000000003', Authors: 'Martin, G.R.R.', Book_ID: 'B00000000005', Book_Summary: 'The first book in a series of fantasy novels.', Categories: 'Fantasy, Epic', Cover_Image: null, ISBN_No: '9780553103540', ISSN_No: null, Language: 'English', No_of_Pages: 694, Publication_Year: '2024', PublisherID: 'PUB000000003', PublisherName: 'Bantam Spectra', Title: 'A Game of Thrones' },
+  {
+    Accession_No: '1997001ROWH.002',
+    AuthorIDs: 'AUT000000002',
+    Authors: 'Rowling, J.K.',
+    Book_ID: 'B00000000004',
+    Book_Summary: 'First novel in the Harry Potter series.',
+    Categories: 'Fantasy, Adventure',
+    Cover_Image: null,
+    ISBN_No: '9780747532743',
+    ISSN_No: null,
+    Language: 'English',
+    No_of_Pages: 223,
+    Publication_Year: '1997',
+    PublisherID: 'PUB000000002',
+    PublisherName: 'HarperCollins',
+    Title: "Harry Potter and the Philosopher's Stone",
+  },
+  {
+    Accession_No: '2011001MANT.001',
+    AuthorIDs: 'AUT000000003',
+    Authors: 'Martin, G.R.R.',
+    Book_ID: 'B00000000005',
+    Book_Summary: 'The first book in a series of fantasy novels.',
+    Categories: 'Fantasy, Epic',
+    Cover_Image: null,
+    ISBN_No: '9780553103540',
+    ISSN_No: null,
+    Language: 'English',
+    No_of_Pages: 694,
+    Publication_Year: '2024',
+    PublisherID: 'PUB000000003',
+    PublisherName: 'Bantam Spectra',
+    Title: 'A Game of Thrones',
+  },
 ];
 
 const PublisherPage = () => {
@@ -22,19 +54,19 @@ const PublisherPage = () => {
     const fetchPublisherData = async () => {
       try {
         const publisherRes = await axiosInstance.get(`/publishers/${publisherID}`);
-        console.log(publisherRes.data.data)
+        console.log(publisherRes.data.data);
         const publisherData = publisherRes.data?.data?.[0];
-        
+
         if (!publisherData) {
-          throw new Error("Publisher data not found in response.");
+          throw new Error('Publisher data not found in response.');
         }
         setPublisher(publisherData);
-        
+
         const booksRes = await axiosInstance.get(`/publishers/${publisherID}/books`);
-        console.log(booksRes.data?.data)
+        console.log(booksRes.data?.data);
         setBooks(booksRes.data?.data || []);
       } catch (error) {
-        console.error("API call failed. Using fallback data. Error:", error.message);
+        console.error('API call failed. Using fallback data. Error:', error.message);
         setPublisher(fallbackPublisher);
         setBooks(fallbackBooks);
       } finally {
@@ -43,16 +75,16 @@ const PublisherPage = () => {
     };
     fetchPublisherData();
   }, [publisherID]);
-  
+
   const getInitials = (name) => {
     if (!name) return '';
     const parts = name.split(' ');
     let initials = '';
     if (parts.length > 0) {
-        initials += parts[0][0];
+      initials += parts[0][0];
     }
     if (parts.length > 1) {
-        initials += parts[1][0];
+      initials += parts[1][0];
     }
     return initials.toUpperCase();
   };
@@ -81,7 +113,8 @@ const PublisherPage = () => {
                 </h1>
                 <p className="text-base text-gray-600 leading-relaxed">
                   {/* Publisher description from schema not available, using a placeholder */}
-                  This publisher is dedicated to bringing quality literature to readers around the world.
+                  This publisher is dedicated to bringing quality literature to readers around the
+                  world.
                 </p>
               </div>
             </div>
@@ -91,7 +124,10 @@ const PublisherPage = () => {
         {books && books.length > 0 && (
           <section className="bg-white py-12">
             <div className="max-w-7xl mx-auto px-6">
-              <h2 className="text-2xl md:text-3xl font-serif text-center mb-6" style={{ color: '#A56F6E' }}>
+              <h2
+                className="text-2xl md:text-3xl font-serif text-center mb-6"
+                style={{ color: '#A56F6E' }}
+              >
                 Books by {publisher?.Publisher_Name}
               </h2>
               <div className="flex flex-col md:flex-row gap-4">

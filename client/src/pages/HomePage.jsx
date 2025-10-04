@@ -6,18 +6,18 @@ import { useAuthStore } from '../stores/auth.Stores';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const {Visitor, checkUserAuth, User} = useAuthStore();
+  const { Visitor, checkUserAuth, User } = useAuthStore();
   useEffect(() => {
     async function checkUser() {
       try {
-        console.log(Visitor)
+        console.log(Visitor);
         await checkUserAuth(Visitor.Visitor_ID);
-        console.log("User fetched")
+        console.log('User fetched');
       } catch (error) {
-        console.log("You are not subscribed", error);
+        console.log('You are not subscribed', error);
       }
     }
-    if(Visitor){
+    if (Visitor) {
       checkUser();
     }
   }, [Visitor]);

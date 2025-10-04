@@ -29,7 +29,7 @@ export async function getVisitor(req, res, next) {
       Registration_Date: result[0].Registration_Date,
       Country: result[0].Country,
       Avatar: result[0].Avatar,
-    }
+    };
     res.json(new apiResponse(200, data, "Visitor fetched Successfully"));
   } catch (error) {
     console.log(error);
@@ -43,14 +43,16 @@ export async function getUserByVisitorID(req, res, next) {
     if (!visitorID) {
       throw new apiError(400, "Visitor ID is required");
     }
-    const result = await dbquery(checkAUserByVisitorIDQuery, [visitorID.trim()]);
+    const result = await dbquery(checkAUserByVisitorIDQuery, [
+      visitorID.trim(),
+    ]);
     if (!result.length) {
       throw new apiError(404, "User not found");
     }
     // console.log(result);
     res.json(new apiResponse(200, result[0], "User data fetched Successfully"));
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
@@ -82,7 +84,7 @@ export async function getAllDownloadedBooks(req, res, next) {
       throw new apiError(404, "No downloaded books found");
     }
     res.json(
-      new apiResponse(200, result, "Downloaded books fetched Successfully")
+      new apiResponse(200, result, "Downloaded books fetched Successfully"),
     );
   } catch (error) {
     next(error);

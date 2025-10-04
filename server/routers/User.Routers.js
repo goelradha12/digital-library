@@ -24,7 +24,7 @@ router.get("/reviewdBooks/:id", getAllReviews);
 router.post(
   "/registerVisitor",
   visitorRegistrationValidator(),
-  registerVisitor
+  registerVisitor,
 );
 // visitor signup for library membership
 export default router;

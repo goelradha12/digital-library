@@ -95,7 +95,9 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    onClick={()=>{navigate('/authors')}}
+                    onClick={() => {
+                      navigate('/authors');
+                    }}
                     className="text-base text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-2"
                   >
                     <Search className="w-4 h-4" />
@@ -104,7 +106,9 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    onClick={()=>{navigate('/publishers')}}
+                    onClick={() => {
+                      navigate('/publishers');
+                    }}
                     className="text-base text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-2"
                   >
                     <Search className="w-4 h-4" />

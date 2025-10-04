@@ -34,8 +34,8 @@ const Login = () => {
 
     try {
       await checkVisitorAuth(loginData);
-      console.log("Data fetched")
-      
+      console.log('Data fetched');
+
       setLoginData({ email: '', password: '' });
       navigate('/');
     } catch (error) {

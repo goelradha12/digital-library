@@ -9,9 +9,14 @@ const Header = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const navigate = useNavigate();
-  const {Visitor: currentUser, isLoading } = useAuthStore();
+  const { Visitor: currentUser, isLoading } = useAuthStore();
   const isAuthenticated = currentUser !== null;
-  const userInitials = isAuthenticated ? currentUser.Name?.split(' ').map(n => n[0]).join('').toUpperCase() : null;
+  const userInitials = isAuthenticated
+    ? currentUser.Name?.split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+    : null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,10 +50,10 @@ const Header = () => {
     setIsMenuOpen(false);
     setIsProfileMenuOpen(false);
   };
-  
+
   const handleLogout = () => {
     // Implement logout logic here
-    console.log("User logged out");
+    console.log('User logged out');
     setIsProfileMenuOpen(false);
     navigate('/');
   };
