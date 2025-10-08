@@ -67,3 +67,5 @@ WHERE r.User_ID = ?
 ORDER BY r.Review_Date DESC;`;
 
 export const checkUserByIDQuery = `SELECT * FROM User WHERE User_ID = ?;`;
+
+export const checkSUbscriptionValidityQuery = `SELECT subscription_end_date FROM User WHERE User_ID = ?;`;

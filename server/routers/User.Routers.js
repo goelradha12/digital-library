@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  checkIfUserSubscribed,
   getAllDownloadedBooks,
   getAllLikedBooks,
   getAllReviews,
@@ -26,5 +27,9 @@ router.post(
   visitorRegistrationValidator(),
   registerVisitor,
 );
+
+// check if user is subscribed
+router.get("/isSubscribed/:userId", checkIfUserSubscribed);
+
 // visitor signup for library membership
 export default router;

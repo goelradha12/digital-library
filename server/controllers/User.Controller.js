@@ -2,6 +2,7 @@ import {
   checkAUserByVisitorIDQuery,
   checkAVisitorEmailQuery,
   checkAVisitorQuery,
+  checkSUbscriptionValidityQuery,
   getAllDownloadedBooksQuery,
   getAllLikedBooksQuery,
   getAllReviewsQuery,
@@ -126,5 +127,24 @@ export async function registerVisitor(req, res, next) {
     res.json(new apiResponse(200, response, "Visitor registered Successfully"));
   } catch (error) {
     next(error);
+  }
+}
+
+export async function checkIfUserSubscribed(req, res, next) {
+  try {
+    const userID = req.params.userId;
+    if(!userID)
+      throw new apiError(400, "UserID is required");
+    const response = await dbquery(checkSUbscriptionValidityQuery, [userID]);
+
+    // check if subscription is valid today
+    const date = new Date();
+    const today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    if (response[0].Subscription_End < today) {
+      throw new apiError(400, "Subscription is expired");
+    }
+    res.json(new apiResponse(200, {isSubscribed: true}, "Subscription info fetched successfully"))
+  } catch (error) {
+    next(error)
   }
 }
