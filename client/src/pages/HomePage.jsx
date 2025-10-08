@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuthStore } from '../stores/auth.Stores';
+import SubscriptionModal from '../components/SubscriptionModal';
+import { useState } from 'react';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { Visitor, checkUserAuth, User } = useAuthStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     async function checkUser() {
       try {
@@ -20,7 +23,15 @@ const HomePage = () => {
     if (Visitor) {
       checkUser();
     }
+    if (!User && !Visitor) {
+      setIsModalOpen(true);
+    }
+    if (User && new Date(User.subscription_end_date) < new Date()) {
+      console.log('Subscription ended');
+      setIsModalOpen(true);
+    }
   }, [Visitor]);
+
   return (
     <>
       <Header />
@@ -57,6 +68,7 @@ const HomePage = () => {
           </button>
         </div>
       </div>
+      <SubscriptionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <Footer />
     </>
   );
