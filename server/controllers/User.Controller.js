@@ -133,8 +133,7 @@ export async function registerVisitor(req, res, next) {
 export async function checkIfUserSubscribed(req, res, next) {
   try {
     const userID = req.params.userId;
-    if(!userID)
-      throw new apiError(400, "UserID is required");
+    if (!userID) throw new apiError(400, "UserID is required");
     const response = await dbquery(checkSUbscriptionValidityQuery, [userID]);
 
     // check if subscription is valid today
@@ -143,8 +142,14 @@ export async function checkIfUserSubscribed(req, res, next) {
     if (response[0].Subscription_End < today) {
       throw new apiError(400, "Subscription is expired");
     }
-    res.json(new apiResponse(200, {isSubscribed: true}, "Subscription info fetched successfully"))
+    res.json(
+      new apiResponse(
+        200,
+        { isSubscribed: true },
+        "Subscription info fetched successfully",
+      ),
+    );
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
