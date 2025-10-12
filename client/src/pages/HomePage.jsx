@@ -30,7 +30,7 @@ const HomePage = () => {
       console.log('Subscription ended');
       setIsModalOpen(true);
     }
-  }, [Visitor]);
+  }, []);
 
   return (
     <>

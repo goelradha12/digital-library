@@ -32,4 +32,35 @@ export const useAuthStore = create((set) => ({
       set({ isLoading: false });
     }
   },
+  
+  likeBook: async (userId, bookId) => {
+    try {
+      await axiosInstance.post(`/users/likeBook/${userId}/likes/${bookId}`);
+      set((state) => ({ likesCount: state.likesCount + 1 }));
+      return true;
+    } catch (err) {
+      console.error('Error liking book:', err);
+      return false;
+    }
+  },
+
+  unLikeBook: async (userId, bookId) => {
+    try {
+      await axiosInstance.delete(`/users/likeBook/${userId}/likes/${bookId}`);
+      set((state) => ({ likesCount: Math.max(0, state.likesCount - 1) }));
+      return true;
+    } catch (err) {
+      console.error('Error unliking book:', err);
+      return false;
+    }
+  },
+
+  checkIfBookLiked: async (userId, bookId) => {
+    try {
+      await axiosInstance.get(`/users/likeBook/${userId}/likes/${bookId}`);
+      return true; // depends on your backend response
+    } catch (err) {
+      return false;
+    }
+  },
 }));

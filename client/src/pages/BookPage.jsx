@@ -5,10 +5,19 @@ import Footer from '../components/Footer';
 import CarouselSection from '../components/BookCarousel';
 import { ThumbsUp, Download, Star, Heart } from 'lucide-react';
 import { useBookStore } from '../stores/book.Stores';
+import { useAuthStore } from '../stores/auth.Stores';
 
 const BookPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { User, likeBook, unLikeBook, checkIfBookLiked } = useAuthStore();
+
+  var userId;
+  if (!User) {
+    // show the modal
+  } else {
+    userId = User.User_ID;
+  }
   const {
     book,
     isLoadingBook,
@@ -19,9 +28,21 @@ const BookPage = () => {
     downloadCount,
     authorBooks,
   } = useBookStore();
+  const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
     fetchABook(id);
+
+    // a call to fetch if book is liked or not
   }, [id]);
+
+  useEffect(() => {
+    if (id && userId) {
+      (async () => {
+        const liked = await checkIfBookLiked(userId, id);
+        setIsLiked(liked);
+      })();
+    }
+  }, [id, userId]);
 
   if (isLoadingBook || !book) {
     return (
@@ -31,6 +52,17 @@ const BookPage = () => {
     );
   }
 
+  const handleLikeButton = async () => {
+    if (!userId) return alert('Please login to like books');
+
+    if (isLiked) {
+      const success = await unLikeBook(userId, id);
+      if (success) setIsLiked(false);
+    } else {
+      const success = await likeBook(userId, id);
+      if (success) setIsLiked(true);
+    }
+  };
   return (
     <>
       <Header />
@@ -132,13 +164,19 @@ const BookPage = () => {
               <button className="px-6 py-2 rounded-full border-2 border-[#A56F6E] text-[#A56F6E] hover:bg-[#A56F6E] hover:text-white transition-all duration-300 font-semibold">
                 Add to Downloads
               </button>
-              <a
-                href="#"
-                className="flex items-center gap-2 text-[#A56F6E] text-sm font-semibold transition-colors duration-200 hover:text-[#8F5B5A]"
+              <button
+                onClick={handleLikeButton}
+                className={`flex items-center gap-2 text-sm font-semibold transition-all duration-200 ${
+                  isLiked ? 'text-red-500' : 'text-[#A56F6E] hover:text-[#8F5B5A]'
+                }`}
               >
-                <Heart size={16} />
-                Add to Wishlist
-              </a>
+                <Heart
+                  size={16}
+                  fill={isLiked ? 'red' : 'none'}
+                  className={`transition-transform ${isLiked ? 'scale-110' : ''}`}
+                />
+                {isLiked ? 'Added to Wishlist' : 'Add to Wishlist'}
+              </button>
             </div>
           </div>
         </section>
