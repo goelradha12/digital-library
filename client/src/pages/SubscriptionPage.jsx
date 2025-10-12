@@ -122,11 +122,10 @@ const SubscriptionPage = () => {
         color: '#A56F6E', // Our dusty rose color
       },
       modal: {
-  ondismiss: function () {
-    alert('Payment process was cancelled.');
-  },
-},
-
+        ondismiss: function () {
+          alert('Payment process was cancelled.');
+        },
+      },
     };
 
     const paymentObject = new window.Razorpay(options);
@@ -135,11 +134,10 @@ const SubscriptionPage = () => {
 
   // Handle CTA Click based on state
   const handleCtaClick = async () => {
-    if (!isLoggedIn) 
-      return navigate('/login');
+    if (!isLoggedIn) return navigate('/login');
     setIsProcessing(true);
-  await initiatePaymentProcess();
-  setIsProcessing(false);
+    await initiatePaymentProcess();
+    setIsProcessing(false);
   };
 
   return (

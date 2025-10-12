@@ -40,8 +40,8 @@ export async function verifyPayment(req, res, next) {
         new apiError(
           404,
           { success: false },
-          "Order not found or invalid Razorpay Order ID."
-        )
+          "Order not found or invalid Razorpay Order ID.",
+        ),
       );
     }
 
@@ -55,7 +55,7 @@ export async function verifyPayment(req, res, next) {
       throw new apiError(
         400,
         { success: false },
-        "Payment verification failed — invalid signature."
+        "Payment verification failed — invalid signature.",
       );
     }
 
@@ -71,7 +71,7 @@ export async function verifyPayment(req, res, next) {
       // Find or create a User
       const [existingUser] = await connection.query(
         "SELECT User_ID FROM User WHERE Visitor_ID = ?",
-        [visitorId]
+        [visitorId],
       );
       console.log("User: ", existingUser);
       let userId;
@@ -82,7 +82,7 @@ export async function verifyPayment(req, res, next) {
         userId = (
           await connection.query(
             "SELECT User_ID FROM User WHERE Visitor_ID = ?",
-            [visitorId]
+            [visitorId],
           )
         )[0].User_ID;
       } else {
@@ -92,7 +92,7 @@ export async function verifyPayment(req, res, next) {
       // Insert into Transaction table
       await connection.query(
         "INSERT INTO Transaction (Transaction_ID, User_ID, Amount_Paid, Payment_Method) VALUES (?, ?, ?, ?)",
-        [orderDetails.id, userId, orderDetails.amount / 100, "Razorpay"]
+        [orderDetails.id, userId, orderDetails.amount / 100, "Razorpay"],
       );
 
       await connection.commit();
@@ -106,8 +106,8 @@ export async function verifyPayment(req, res, next) {
             userId,
             transactionID: orderDetails.id,
           },
-          "Payment verified and recorded successfully."
-        )
+          "Payment verified and recorded successfully.",
+        ),
       );
     } catch (dbError) {
       console.error("Database Error:", dbError);
@@ -120,7 +120,7 @@ export async function verifyPayment(req, res, next) {
           {
             amount: orderDetails.amount, // refund full amount
             speed: "optimum",
-          }
+          },
         );
 
         console.log("Refund issued:", refund);
@@ -129,8 +129,8 @@ export async function verifyPayment(req, res, next) {
           new apiError(
             500,
             { success: false, refund },
-            "Payment verified but failed to record transaction. Refund initiated."
-          )
+            "Payment verified but failed to record transaction. Refund initiated.",
+          ),
         );
       } catch (refundError) {
         console.error("Refund Error:", refundError);
@@ -138,8 +138,8 @@ export async function verifyPayment(req, res, next) {
           new apiError(
             500,
             { success: false },
-            "Payment verified but DB operation and refund both failed. Manual intervention required."
-          )
+            "Payment verified but DB operation and refund both failed. Manual intervention required.",
+          ),
         );
       }
     } finally {
