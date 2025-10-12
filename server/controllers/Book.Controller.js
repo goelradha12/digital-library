@@ -12,7 +12,7 @@ import { dbquery } from "../utils/db.helper.js";
 export async function getAllBooks(req, res, next) {
   try {
     const result = await dbquery(getAllBooksQuery);
-    console.log(result);
+    // console.log(result);
     res.json(new apiResponse(200, result, "Books fetched Successfully"));
   } catch (error) {
     next(error);

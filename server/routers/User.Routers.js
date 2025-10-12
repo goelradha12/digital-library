@@ -10,6 +10,7 @@ import {
 } from "../controllers/User.Controller.js";
 import { verifyUserByID } from "../middleware/Auth.Middlewares.js";
 import { visitorRegistrationValidator } from "../validators/User.Validators.js";
+import { validate } from "../middleware/Validator.Middleware.js";
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.get("/reviewdBooks/:id", getAllReviews);
 router.post(
   "/registerVisitor",
   visitorRegistrationValidator(),
+  validate,
   registerVisitor,
 );
 

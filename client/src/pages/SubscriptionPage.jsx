@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Lock, Heart, Calendar } from 'lucide-react';
 import { axiosInstance } from '../utils/axios';
+import { useState } from 'react';
 
 // Utility function to dynamically load the Razorpay script
 const loadScript = (src) => {
@@ -21,6 +22,7 @@ const SubscriptionPage = () => {
   const navigate = useNavigate();
   // Assuming useAuthStore provides both Visitor (logged-in but unsubscribed) and User (subscribed)
   const { Visitor, User } = useAuthStore();
+  const [isProcessing, setIsProcessing] = useState(false);
   const isLoggedIn = Visitor || User;
   const isSubscribed = User && User.subscription_end_date;
 
@@ -67,7 +69,7 @@ const SubscriptionPage = () => {
     }
 
     // Determine the ID to send for payment processing
-    const userIdForOrder = User?.User_ID || Visitor?.Visitor_ID;
+    const userIdForOrder = Visitor?.Visitor_ID || User?.Visitor_ID;
     if (!userIdForOrder) return;
 
     // 2. Call backend to create Razorpay Order ID
@@ -76,7 +78,7 @@ const SubscriptionPage = () => {
       // NOTE: This endpoint needs to be secured on your backend
       const response = await axiosInstance.post('/payments/create-order', {
         amount: 60000, // Amount in paisa (₹600.00)
-        user_id: Visitor.Visitor_ID,
+        visitor_id: userIdForOrder,
       });
       orderDetails = response.data.data;
     } catch (error) {
@@ -96,10 +98,11 @@ const SubscriptionPage = () => {
       handler: function (response) {
         // This handler is called on successful payment
         // NOTE: Call your backend validation endpoint here
+        console.log(response);
         axiosInstance
           .post('/payments/verify', response)
           .then((verificationRes) => {
-            if (verificationRes.data.success) {
+            if (verificationRes.data.data?.success) {
               alert('Subscription successful! Redirecting to profile.');
               navigate('/profile');
             } else {
@@ -108,7 +111,7 @@ const SubscriptionPage = () => {
           })
           .catch((err) => {
             console.error('Verification failed:', err);
-            alert('A critical error occurred during verification.');
+            alert('A error occurred during verification.');
           });
       },
       prefill: {
@@ -118,6 +121,12 @@ const SubscriptionPage = () => {
       theme: {
         color: '#A56F6E', // Our dusty rose color
       },
+      modal: {
+  ondismiss: function () {
+    alert('Payment process was cancelled.');
+  },
+},
+
     };
 
     const paymentObject = new window.Razorpay(options);
@@ -125,14 +134,12 @@ const SubscriptionPage = () => {
   };
 
   // Handle CTA Click based on state
-  const handleCtaClick = () => {
-    if (!isLoggedIn) {
-      // User is not logged in/signed up, redirect to the login page
-      navigate('/login');
-    } else {
-      // User is logged in (Visitor or User), proceed to payment initiation
-      initiatePaymentProcess();
-    }
+  const handleCtaClick = async () => {
+    if (!isLoggedIn) 
+      return navigate('/login');
+    setIsProcessing(true);
+  await initiatePaymentProcess();
+  setIsProcessing(false);
   };
 
   return (
@@ -184,9 +191,7 @@ const SubscriptionPage = () => {
               onClick={handleCtaClick}
               className="w-full cursor-pointer px-6 py-3 text-xl font-semibold text-white rounded-full shadow-lg transition-transform duration-300 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-[#A56F6E] focus:ring-opacity-50"
               style={{ backgroundColor: '#A56F6E' }}
-              // ONLY disable the button if the user is logged in AND we are processing a transaction (future state),
-              // but not when we need to redirect them to login.
-              disabled={false} // Removed conditional disable for redirect logic
+              disabled={isProcessing}
             >
               {ctaButtonText}
             </button>
