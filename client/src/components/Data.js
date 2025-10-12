@@ -155,3 +155,26 @@ export const mybooks = [
     Title: 'The Whispering Heart',
   },
 ];
+
+export const fallbackBook = {
+  Accession_No: '1997001ROWH.002',
+  AuthorIDs: 'AUT000000002',
+  Author_Images: null,
+  Author_Introductions: 'British author, best known for the Harry Potter series.',
+  Authors: 'Rowling, J.K.',
+  Book_ID: 'B00000000004',
+  Book_Summary: 'First novel in the Harry Potter series.',
+  Categories: 'Fantasy, Adventure',
+  Cover_Image: null,
+  ISBN_No: '9780747532743',
+  ISSN_No: null,
+  Language: 'English',
+  No_of_Pages: 223,
+  Publication_Year: '1997',
+  PublisherID: 'PUB000000002',
+  PublisherName: 'HarperCollins',
+  SeriesID: 'SER000000002',
+  SeriesName: 'A Song of Ice and Fire',
+  Series_Description: 'Epic fantasy novels by George R. R. Martin.',
+  Title: "Harry Potter and the Philosopher's Stone",
+};

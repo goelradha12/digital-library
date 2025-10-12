@@ -1,96 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { axiosInstance } from '../utils/axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import CarouselSection from '../components/BookCarousel';
 import { ThumbsUp, Download, Star, Heart } from 'lucide-react';
-import { mybooks } from '../components/Data';
-
-const fallbackBook = {
-  Accession_No: '1997001ROWH.002',
-  AuthorIDs: 'AUT000000002',
-  Author_Images: null,
-  Author_Introductions: 'British author, best known for the Harry Potter series.',
-  Authors: 'Rowling, J.K.',
-  Book_ID: 'B00000000004',
-  Book_Summary: 'First novel in the Harry Potter series.',
-  Categories: 'Fantasy, Adventure',
-  Cover_Image: null,
-  ISBN_No: '9780747532743',
-  ISSN_No: null,
-  Language: 'English',
-  No_of_Pages: 223,
-  Publication_Year: '1997',
-  PublisherID: 'PUB000000002',
-  PublisherName: 'HarperCollins',
-  SeriesID: 'SER000000002',
-  SeriesName: 'A Song of Ice and Fire',
-  Series_Description: 'Epic fantasy novels by George R. R. Martin.',
-  Title: "Harry Potter and the Philosopher's Stone",
-};
+import { useBookStore } from '../stores/book.Stores';
 
 const BookPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [book, setBook] = useState(null);
-  const [authorBooks, setAuthorBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [downloadCount, setDownloadCount] = useState(0);
-  const [likesCount, setLikesCount] = useState(0);
-  const [reviews, setReviews] = useState([]);
-  const [averageRating, setAverageRating] = useState(0);
+  const {
+    book,
+    isLoadingBook,
+    fetchABook,
+    likesCount,
+    reviews,
+    averageRating,
+    downloadCount,
+    authorBooks,
+  } = useBookStore();
   useEffect(() => {
-    const fetchBookAndAuthor = async () => {
-      try {
-        // Fetch main book data
-        console.log(`Fetching book with ID: ${id}`);
-        const bookRes = await axiosInstance.get(`/books/${id}`);
-        const bookData = bookRes.data?.data?.[0];
-
-        if (!bookData) {
-          throw new Error('Book data not found in response.');
-        }
-        setBook(bookData);
-
-        // Fetch other books by the same author only if AuthorIDs exists
-        if (bookData.AuthorIDs) {
-          console.log(`Fetching other books by author: ${bookData.AuthorIDs}`);
-          const authorBooksRes = await axiosInstance.get(`/authors/${bookData.AuthorIDs}/books`);
-          console.log(authorBooksRes.data?.data);
-          setAuthorBooks(authorBooksRes.data?.data || []);
-        }
-
-        // Fetch likes and downloads counts of a book
-        const likesCountRes = await axiosInstance.get(`/books/likesCount/${id}`);
-        setLikesCount(likesCountRes.data?.data[0].total_likes);
-
-        const downloadCountRes = await axiosInstance.get(`/books/downloadCount/${id}`);
-        setDownloadCount(downloadCountRes.data?.data[0].total_downloads);
-        try {
-          const reviewsOfBookRes = await axiosInstance.get(`books/allReview/${id}`);
-          const reviewsData = reviewsOfBookRes.data?.data || [];
-          setReviews(reviewsData);
-          if (reviewsData.length > 0) {
-            const totalRating = reviewsData.reduce((sum, review) => sum + review.Rating, 0);
-            setAverageRating((totalRating / reviewsData.length).toFixed(1));
-          }
-        } catch (reviewsError) {
-          console.warn('Could not fetch reviews:', reviewsError.message);
-        }
-      } catch (error) {
-        console.error('API call failed. Using fallback data. Error:', error.message);
-        setBook(fallbackBook);
-        setAuthorBooks(mybooks);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookAndAuthor();
+    fetchABook(id);
   }, [id]);
 
-  if (loading || !book) {
+  if (isLoadingBook || !book) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-800">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-400"></div>

@@ -2,30 +2,15 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Search, Filter, X } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { axiosInstance } from '../utils/axios.js';
 import BookCard from '../components/BookCard';
-import { mybooks } from '../components/Data.js';
+import { useBookStore } from '../stores/book.Stores.js';
 
 const Books = () => {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
+  const { fetchBooks, books, isLoadingBooks } = useBookStore();
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await axiosInstance.get('/books');
-        setBooks(response.data.data);
-      } catch (error) {
-        console.error('Failed to fetch books from API, using fallback data:', error);
-        setBooks(mybooks);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchBooks();
   }, []);
 
@@ -42,8 +27,6 @@ const Books = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isFilterOpen]);
-
-  const newReleases = books.filter((book) => parseInt(book.Publication_Year) >= 2024);
 
   // Extract unique categories from all books
   const allCategories = useMemo(() => {
@@ -200,7 +183,7 @@ const Books = () => {
                 </div>
               </div>
             )}
-            {loading ? (
+            {isLoadingBooks ? (
               <div className="flex justify-center items-center h-48">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-400"></div>
               </div>
