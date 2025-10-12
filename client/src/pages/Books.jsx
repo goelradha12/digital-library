@@ -3,7 +3,6 @@ import { Search, Filter, X } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { axiosInstance } from '../utils/axios.js';
-import CarouselSection from '../components/BookCarousel';
 import BookCard from '../components/BookCard';
 import { mybooks } from '../components/Data.js';
 
@@ -79,23 +78,6 @@ const Books = () => {
       <Header />
       <div className="bg-[#f2e4e3] min-h-screen pt-30 pb-12">
         <div className="container mx-auto max-w-7xl px-6 space-y-16">
-          {/* New Releases Carousel Section */}
-          <section>
-            <h2
-              className="text-3xl md:text-5xl font-serif font-light mb-8 text-center"
-              style={{ color: '#A56F6E' }}
-            >
-              Latest Publishes
-            </h2>
-            {loading ? (
-              <div className="flex justify-center items-center h-48">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-400"></div>
-              </div>
-            ) : (
-              <CarouselSection books={newReleases} />
-            )}
-          </section>
-
           {/* All Books Section */}
           <section>
             {/* Header with Search and Filter */}

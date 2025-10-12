@@ -21,7 +21,7 @@ const loadScript = (src) => {
 const SubscriptionPage = () => {
   const navigate = useNavigate();
   // Assuming useAuthStore provides both Visitor (logged-in but unsubscribed) and User (subscribed)
-  const { Visitor, User } = useAuthStore();
+  const { Visitor, User, checkUserAuth } = useAuthStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const isLoggedIn = Visitor || User;
   const isSubscribed = User && User.subscription_end_date;
@@ -104,7 +104,9 @@ const SubscriptionPage = () => {
           .then((verificationRes) => {
             if (verificationRes.data.data?.success) {
               alert('Subscription successful! Redirecting to profile.');
-              navigate('/profile');
+              // refesh the user data
+              checkUserAuth(Visitor.Visitor_ID);
+              navigate('/');
             } else {
               alert('Payment verification failed. Contact support.');
             }

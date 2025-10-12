@@ -91,8 +91,8 @@ export async function verifyPayment(req, res, next) {
 
       // Insert into Transaction table
       await connection.query(
-        "INSERT INTO Transaction (Transaction_ID, User_ID, Amount_Paid, Payment_Method) VALUES (?, ?, ?, ?)",
-        [orderDetails.id, userId, orderDetails.amount / 100, "Razorpay"],
+        "INSERT INTO Transaction (Transaction_ID, User_ID, Amount_Paid, Payment_Method, Razorpay_Payment_ID) VALUES (?, ?, ?, ?, ?)",
+        [orderDetails.id, userId, orderDetails.amount / 100, "Razorpay", razorpay_payment_id],
       );
 
       await connection.commit();
