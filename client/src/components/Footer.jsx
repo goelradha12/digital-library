@@ -115,6 +115,9 @@ const Footer = () => {
                     Find Publishers
                   </a>
                 </li>
+                <li>
+                  <a onClick={()=>{navigate("/subscription")}}>Buy Subscription</a>
+                </li>
               </ul>
             </div>
 

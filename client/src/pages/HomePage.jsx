@@ -12,26 +12,23 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     async function checkUser() {
-      try {
-        console.log(Visitor);
         await checkUserAuth(Visitor.Visitor_ID);
-        console.log('User fetched');
-      } catch (error) {
-        console.log('You are not subscribed', error);
-      }
     }
     if (Visitor) {
       checkUser();
+      console.log("User: ", User);
     }
-    if (!User && !Visitor) {
+  }, []);
+
+  useEffect(()=>{ 
+    if (!User) {
       setIsModalOpen(true);
     }
     if (User && new Date(User.subscription_end_date) < new Date()) {
       console.log('Subscription ended');
       setIsModalOpen(true);
     }
-  }, []);
-
+  }, [User]);
   return (
     <>
       <Header />

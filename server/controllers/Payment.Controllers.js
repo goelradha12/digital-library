@@ -76,15 +76,17 @@ export async function verifyPayment(req, res, next) {
       console.log("User: ", existingUser);
       let userId;
       if (existingUser.length === 0) {
-        await connection.query("INSERT INTO User (Visitor_ID) VALUES (?)", [
-          visitorId,
+        await connection.query("INSERT INTO User (Visitor_ID, Start_Date) VALUES (?, ?)", [
+          visitorId, new Date()
         ]);
-        userId = (
-          await connection.query(
-            "SELECT User_ID FROM User WHERE Visitor_ID = ?",
-            [visitorId],
-          )
-        )[0].User_ID;
+        const [rows] = await connection.query(
+          "SELECT User_ID FROM User WHERE Visitor_ID = ?",
+          [visitorId],
+        );
+
+        if (rows.length > 0) {
+          userId = rows[0].User_ID;
+        }
       } else {
         userId = existingUser[0].User_ID;
       }
