@@ -76,9 +76,10 @@ export async function verifyPayment(req, res, next) {
       console.log("User: ", existingUser);
       let userId;
       if (existingUser.length === 0) {
-        await connection.query("INSERT INTO User (Visitor_ID, Start_Date) VALUES (?, ?)", [
-          visitorId, new Date()
-        ]);
+        await connection.query(
+          "INSERT INTO User (Visitor_ID, Start_Date) VALUES (?, ?)",
+          [visitorId, new Date()],
+        );
         const [rows] = await connection.query(
           "SELECT User_ID FROM User WHERE Visitor_ID = ?",
           [visitorId],
@@ -94,7 +95,13 @@ export async function verifyPayment(req, res, next) {
       // Insert into Transaction table
       await connection.query(
         "INSERT INTO Transaction (Transaction_ID, User_ID, Amount_Paid, Payment_Method, Razorpay_Payment_ID) VALUES (?, ?, ?, ?, ?)",
-        [orderDetails.id, userId, orderDetails.amount / 100, "Razorpay", razorpay_payment_id],
+        [
+          orderDetails.id,
+          userId,
+          orderDetails.amount / 100,
+          "Razorpay",
+          razorpay_payment_id,
+        ],
       );
 
       await connection.commit();

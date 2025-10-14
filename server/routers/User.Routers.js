@@ -11,7 +11,11 @@ import {
 import { verifyUserByID } from "../middleware/Auth.Middlewares.js";
 import { visitorRegistrationValidator } from "../validators/User.Validators.js";
 import { validate } from "../middleware/Validator.Middleware.js";
-import { isBookLiked, likeABook, unLikeABook } from "../controllers/UserBook.Controllers.js";
+import {
+  isBookLiked,
+  likeABook,
+  unLikeABook,
+} from "../controllers/UserBook.Controllers.js";
 
 const router = Router();
 
@@ -28,7 +32,7 @@ router.post(
   "/registerVisitor",
   visitorRegistrationValidator(),
   validate,
-  registerVisitor
+  registerVisitor,
 );
 
 // check if user is subscribed

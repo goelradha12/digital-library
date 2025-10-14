@@ -14,7 +14,7 @@ export const unLikeABook = async (req, res, next) => {
     const { userId, bookId } = req.params;
     await dbquery(removeLikeQuery, [userId, bookId]);
     res.json(
-      new apiResponse(200, null, "Book removed from likes successfully")
+      new apiResponse(200, null, "Book removed from likes successfully"),
     );
   } catch (error) {
     next(error);
