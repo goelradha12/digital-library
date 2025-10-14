@@ -12,15 +12,15 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     async function checkUser() {
-        await checkUserAuth(Visitor.Visitor_ID);
+      await checkUserAuth(Visitor.Visitor_ID);
     }
     if (Visitor) {
       checkUser();
-      console.log("User: ", User);
+      console.log('User: ', User);
     }
   }, []);
 
-  useEffect(()=>{ 
+  useEffect(() => {
     if (!User) {
       setIsModalOpen(true);
     }

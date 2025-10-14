@@ -116,7 +116,13 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a onClick={()=>{navigate("/subscription")}}>Buy Subscription</a>
+                  <a
+                    onClick={() => {
+                      navigate('/subscription');
+                    }}
+                  >
+                    Buy Subscription
+                  </a>
                 </li>
               </ul>
             </div>
