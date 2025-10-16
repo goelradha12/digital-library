@@ -14,6 +14,7 @@ import PublisherPage from './pages/PublisherPage';
 import UserProfile from './pages/UserProfile';
 import Accessibility from './pages/Accessibility';
 import SubscriptionPage from './pages/SubscriptionPage';
+import PDFPage from './pages/PDFPage';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -31,6 +32,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/userProfile" element={<UserProfile />} />
       <Route path="/accessibility" element={<Accessibility />} />
       <Route path="/subscription" element={<SubscriptionPage />} />
+      <Route path="/readBook" element={<PDFPage />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
