@@ -18,7 +18,7 @@ router.get("/:bookId/pages", async (req, res) => {
     const end = parseInt(req.query.end || start + 9); // default 10 pages
 
     // PDF file location (private folder)
-    const pdfPath = path.join(__dirname, `../uploads/books/${"test"}.pdf`);
+    const pdfPath = path.join(__dirname, `../uploads/books/${bookId}.pdf`);
 
     if (!fs.existsSync(pdfPath)) {
       return res.status(404).json({ message: "Book not found" });
@@ -58,7 +58,7 @@ router.get("/:bookId/pages", async (req, res) => {
     // Disable caching for security
     res.setHeader(
       "Cache-Control",
-      "no-store, no-cache, must-revalidate, private",
+      "no-store, no-cache, must-revalidate, private"
     );
     console.log(totalPages);
     res.setHeader("X-Total-Pages", totalPages);
