@@ -32,7 +32,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/userProfile" element={<UserProfile />} />
       <Route path="/accessibility" element={<Accessibility />} />
       <Route path="/subscription" element={<SubscriptionPage />} />
-      <Route path="/readBook" element={<PDFPage />} />
+      <Route path="/readBook/:bookid" element={<PDFPage />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>

@@ -8,7 +8,7 @@ app.use(
     origin: "http://localhost:5173",
     credentials: true,
     exposedHeaders: ["X-Total-Pages"],
-  })
+  }),
 );
 import bookRouter from "./routers/Book.Routers.js";
 import authorRouter from "./routers/Author.Routers.js";
