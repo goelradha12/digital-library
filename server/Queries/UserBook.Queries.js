@@ -49,3 +49,9 @@ export const removeDownloadQuery = `
     DELETE FROM Offline_Content
     WHERE User_ID = ? AND Book_ID = ?;
 `;
+
+// --- REVIEW QUERIES ---
+export const getTheReviewQuery = `SELECT * from Reviews WHERE User_ID = ? AND Book_ID = ?;`;
+export const addAReviewQuery = `INSERT INTO Reviews (User_ID, Book_ID, Review_Text, Review_Date, Rating) VALUES (?, ?, ?, ?, ?);`;
+export const updateAReviewQuery = `UPDATE Reviews SET Review_Text = ?, Review_Date = ?, Rating = ? WHERE User_ID = ? AND Book_ID = ?;`;
+export const deleteAReviewQuery = `DELETE FROM Reviews WHERE User_ID = ? AND Book_ID = ?;`;
