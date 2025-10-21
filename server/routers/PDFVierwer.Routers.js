@@ -58,7 +58,7 @@ router.get("/:bookId/pages", async (req, res) => {
     // Disable caching for security
     res.setHeader(
       "Cache-Control",
-      "no-store, no-cache, must-revalidate, private"
+      "no-store, no-cache, must-revalidate, private",
     );
     console.log(totalPages);
     res.setHeader("X-Total-Pages", totalPages);

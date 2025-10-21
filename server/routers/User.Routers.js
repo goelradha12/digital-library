@@ -39,7 +39,7 @@ router.post(
   "/registerVisitor",
   visitorRegistrationValidator(),
   validate,
-  registerVisitor
+  registerVisitor,
 );
 
 // check if user is subscribed

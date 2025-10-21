@@ -6,12 +6,13 @@ import CarouselSection from '../components/BookCarousel';
 import { ThumbsUp, Download, Star, Heart } from 'lucide-react';
 import { useBookStore } from '../stores/book.Stores';
 import { useAuthStore } from '../stores/auth.Stores';
+import ReviewModal from '../components/ReviewModal';
 
 const BookPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { User, likeBook, unLikeBook, checkIfBookLiked } = useAuthStore();
-
+  const [isReviewModalOpen, setisReviewModalOpen] = useState(false);
   var userId;
   if (!User) {
     // show the modal
@@ -246,6 +247,29 @@ const BookPage = () => {
             ) : (
               <p className="text-center text-gray-500">No reviews yet.</p>
             )}
+            <div className="p-8">
+              <button
+                onClick={() => {
+                  if (!User) {
+                    alert('Login before writing a review');
+                    navigate('/login');
+                  } else setisReviewModalOpen(true);
+                }}
+                className="px-6 py-2 rounded-lg bg-[#A56F6E] text-white hover:bg-[#8b5a59] transition"
+              >
+                Write a Review
+              </button>
+
+              {/* Modal */}
+              {User && (
+                <ReviewModal
+                  isOpen={isReviewModalOpen}
+                  onClose={() => setisReviewModalOpen(false)}
+                  userId={User.User_ID}
+                  bookId={book.Book_ID}
+                />
+              )}
+            </div>
           </div>
         </section>
         {/* You Might Also Like Section */}

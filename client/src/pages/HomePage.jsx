@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { Visitor, checkUserAuth, User } = useAuthStore();
+  const { Visitor, checkUserAuth, User, isLoading } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     async function checkUser() {
@@ -18,17 +18,21 @@ const HomePage = () => {
       checkUser();
       console.log('User: ', User);
     }
-  }, []);
+  }, [Visitor]);
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
     if (!User) {
       setIsModalOpen(true);
-    }
-    if (User && new Date(User.subscription_end_date) < new Date()) {
+    } else if (User && new Date(User.subscription_end_date) < new Date()) {
       console.log('Subscription ended');
       setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
     }
-  }, [User]);
+  }, [isLoading, User]);
   return (
     <>
       <Header />

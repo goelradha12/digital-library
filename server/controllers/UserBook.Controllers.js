@@ -22,7 +22,7 @@ export const unLikeABook = async (req, res, next) => {
     const { userId, bookId } = req.params;
     await dbquery(removeLikeQuery, [userId, bookId]);
     res.json(
-      new apiResponse(200, null, "Book removed from likes successfully")
+      new apiResponse(200, null, "Book removed from likes successfully"),
     );
   } catch (error) {
     next(error);
@@ -128,7 +128,11 @@ export const deleteAReview = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const bookId = req.params.bookId;
-    await dbquery(deleteAReviewQuery, [userId, bookId]);
+    const result = await dbquery(deleteAReviewQuery, [userId, bookId]);
+    if (result.affectedRows == 0) {
+      throw new apiError(404, "No review found");
+    }
+    res.json(new apiResponse(200, null, "Review deleted successfully"));
   } catch (error) {
     next(error);
   }
