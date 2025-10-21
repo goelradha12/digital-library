@@ -213,54 +213,26 @@ const BookPage = () => {
           </div>
         </section>
 
-        {/* Reviews Section */}
-        <section className="bg-[#f2e4e3] py-12">
+        <section className="bg-white py-12">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-2xl md:text-3xl font-serif text-center text-[#A56F6E] mb-6">
-              Reviews
-            </h2>
-            {reviews.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200"
-                  >
-                    <div className="flex items-center mb-4">
-                      <div className="text-[#A56F6E] flex items-center gap-2">
-                        {[...Array(review.Rating)].map((_, i) => (
-                          <Star key={i} size={16} fill="#A56F6E" />
-                        ))}
-                        ({review.Rating})
-                      </div>
-                      <span className="ml-2 text-sm font-semibold text-gray-800">
-                        {review.VisitorName}
-                      </span>
-                    </div>
-                    <p className="text-gray-600 leading-relaxed mb-2">{review.Review_Text}</p>
-                    <p className="text-xs text-gray-400">
-                      Reviewed on {new Date(review.Review_Date).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-gray-500">No reviews yet.</p>
-            )}
-            <div className="p-8">
+            {/* Heading and CTA Button (Aligned Left/Right) */}
+            <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-3">
+              <h2 className="text-2xl md:text-3xl font-serif text-[#A56F6E]">
+                User Reviews ({reviews.length})
+              </h2>
               <button
                 onClick={() => {
                   if (!User) {
-                    alert('Login before writing a review');
+                    alert('You must be logged in to write a review.');
                     navigate('/login');
-                  } else setisReviewModalOpen(true);
+                  } else {
+                    setisReviewModalOpen(true);
+                  }
                 }}
-                className="px-6 py-2 rounded-lg bg-[#A56F6E] text-white hover:bg-[#8b5a59] transition"
+                className="px-4 py-2 rounded-full border-2 border-[#A56F6E] text-[#A56F6E] hover:bg-[#A56F6E] hover:text-white transition-all duration-300 font-semibold text-sm"
               >
                 Write a Review
               </button>
-
-              {/* Modal */}
               {User && (
                 <ReviewModal
                   isOpen={isReviewModalOpen}
@@ -270,8 +242,42 @@ const BookPage = () => {
                 />
               )}
             </div>
+
+            {/* Review Grid */}
+            {reviews.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {reviews.map((review, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-100 transition-shadow hover:shadow-md"
+                  >
+                    <div className="flex items-center mb-3">
+                      <div className="text-[#A56F6E] flex items-center gap-1">
+                        {[...Array(review.Rating)].map((_, i) => (
+                          <Star key={i} size={16} fill="#A56F6E" />
+                        ))}
+                      </div>
+                      <span className="ml-3 text-sm font-semibold text-gray-800">
+                        {review.VisitorName}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed mb-3 text-sm">
+                      {review.Review_Text}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Reviewed on {new Date(review.Review_Date).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500 w-full py-10">
+                No reviews yet. Be the first to share your thoughts!
+              </p>
+            )}
           </div>
         </section>
+
         {/* You Might Also Like Section */}
         {authorBooks && authorBooks.length > 0 && (
           <section className=" py-12">

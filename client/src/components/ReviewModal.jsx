@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { X, Star } from 'lucide-react';
 import { useUserReviewsStore } from '../stores/reviews.Store';
+import { useBookStore } from '../stores/book.Stores';
 
 export default function ReviewModal({ userId, bookId, isOpen, onClose }) {
   const { review, addReview, updateReview, getTheReview, isLoadingReview, error } =
     useUserReviewsStore();
-
+  const { fetchBookReviews } = useBookStore();
   const [rating, setRating] = useState(0);
   const [text, setText] = useState('');
   const [mode, setMode] = useState('add'); // add or update
@@ -34,6 +35,7 @@ export default function ReviewModal({ userId, bookId, isOpen, onClose }) {
     } else {
       await updateReview({ userId, bookId, reviewData });
     }
+    fetchBookReviews(bookId);
     onClose(); // Close modal after submission
   };
 

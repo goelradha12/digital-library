@@ -25,6 +25,17 @@ export const useBookStore = create((set) => ({
       set({ isLoadingBooks: false });
     }
   },
+
+  fetchBookReviews: async (id) => {
+    try {
+      const response = await axiosInstance.get(`/books/allReview/${id}`);
+      const reviewsData = response.data?.data || [];
+      set({ reviews: reviewsData });
+    } catch (error) {
+      console.error('Failed to fetch book reviews from API, using fallback data:', error);
+      set({ reviews: [] });
+    }
+  },
   // fetch a single book and related info
   fetchABook: async (id) => {
     try {
