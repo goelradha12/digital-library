@@ -15,12 +15,15 @@ import {
 } from "../validators/User.Validators.js";
 import { validate } from "../middleware/Validator.Middleware.js";
 import {
+  checkIFDownloaded,
   checkReviewEligibility,
   deleteAReview,
+  downloadABook,
   getTheReviewIfExist,
   isBookLiked,
   likeABook,
   reviewABook,
+  unDownloadABook,
   unLikeABook,
   updateAReview,
 } from "../controllers/UserBook.Controllers.js";
@@ -63,6 +66,16 @@ router
   .post(reviewValidator(), validate, reviewABook)
   .put(reviewValidator(), validate, updateAReview)
   .delete(deleteAReview);
-router.get("/reviewBookEligibility/:userId/reviews/:bookId", checkReviewEligibility);
+router.get(
+  "/reviewBookEligibility/:userId/reviews/:bookId",
+  checkReviewEligibility,
+);
+
+// user downloads a book
+router
+  .route("/downloadBook/:userId/downloads/:bookId")
+  .get(checkIFDownloaded)
+  .post(downloadABook)
+  .delete(unDownloadABook);
 
 export default router;

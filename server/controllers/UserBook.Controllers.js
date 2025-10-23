@@ -1,11 +1,13 @@
 import {
   addAReviewQuery,
+  addDownloadQuery,
   addLikeQuery,
   checkDownloadQuery,
   checkLikeQuery,
   countLikedBooks,
   deleteAReviewQuery,
   getTheReviewQuery,
+  removeDownloadQuery,
   removeLikeQuery,
   updateAReviewQuery,
 } from "../Queries/UserBook.Queries.js";
@@ -22,7 +24,7 @@ export const unLikeABook = async (req, res, next) => {
     const { userId, bookId } = req.params;
     await dbquery(removeLikeQuery, [userId, bookId]);
     res.json(
-      new apiResponse(200, null, "Book removed from likes successfully")
+      new apiResponse(200, null, "Book removed from likes successfully"),
     );
   } catch (error) {
     next(error);
@@ -72,7 +74,10 @@ export const checkReviewEligibility = async (req, res, next) => {
     }
     const currRead = currReadResult[0].Percentage_Read;
     if (currRead < minRead) {
-      throw new apiError(400, "Minimum 10% read is required to review the book");
+      throw new apiError(
+        400,
+        "Minimum 10% read is required to review the book",
+      );
     }
     res.json(new apiResponse(200, null, "Eligible for review"));
   } catch (error) {
@@ -151,6 +156,61 @@ export const deleteAReview = async (req, res, next) => {
       throw new apiError(404, "No review found");
     }
     res.json(new apiResponse(200, null, "Review deleted successfully"));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const checkIFDownloaded = async (req, res, next) => {
+  try {
+    const { userId, bookId } = req.params;
+    if (!userId || !bookId) {
+      throw new apiError(400, "User ID and Book ID are required");
+    }
+    const result = await dbquery(checkDownloadQuery, [userId, bookId]);
+    if (result.length == 0) {
+      throw new apiError(404, "No download found");
+    }
+    res.json(new apiResponse(200, result[0], "Download found"));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const downloadABook = async (req, res, next) => {
+  try {
+    const { userId, bookId } = req.params;
+    if (!userId || !bookId) {
+      throw new apiError(400, "User ID and Book ID are required");
+    }
+    const alreadyDownloaded = await dbquery(checkDownloadQuery, [
+      userId,
+      bookId,
+    ]);
+    if (alreadyDownloaded.length > 0) {
+      throw new apiError(400, "Book already downloaded");
+    }
+    const result = await dbquery(addDownloadQuery, [userId, bookId, 1]);
+    if (result.affectedRows == 0) {
+      throw new apiError(404, "Error downloading the book");
+    }
+    res.json(new apiResponse(200, null, "Book access granted successfully"));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unDownloadABook = async (req, res, next) => {
+  try {
+    const { userId, bookId } = req.params;
+    if (!userId || !bookId) {
+      throw new apiError(400, "User ID and Book ID are required");
+    }
+    const result = await dbquery(removeDownloadQuery, [userId, bookId]);
+    if (result.affectedRows == 0) {
+      throw new apiError(404, "Error downloading the book");
+    }
+    res.json(new apiResponse(200, null, "Book access revoked successfully"));
   } catch (error) {
     next(error);
   }

@@ -8,6 +8,7 @@ import { useBookStore } from '../stores/book.Stores';
 import { useAuthStore } from '../stores/auth.Stores';
 import ReviewModal from '../components/ReviewModal';
 import { useUserReviewsStore } from '../stores/reviews.Store';
+import DownloadButton from '../components/DownloadButton';
 
 const BookPage = () => {
   const navigate = useNavigate();
@@ -77,11 +78,9 @@ const BookPage = () => {
     if (!User) {
       alert('You must be logged in to write a review.');
       navigate('/login');
-    } 
-    else if(!isEligibleForReview){
+    } else if (!isEligibleForReview) {
       alert('Min 10% read is required to review the book.');
-    }
-    else {
+    } else {
       setisReviewModalOpen(true);
     }
   };
@@ -183,9 +182,7 @@ const BookPage = () => {
             </div>
 
             <div className="flex items-center gap-6 mt-8">
-              <button className="px-6 py-2 rounded-full border-2 border-[#A56F6E] text-[#A56F6E] hover:bg-[#A56F6E] hover:text-white transition-all duration-300 font-semibold">
-                Add to Downloads
-              </button>
+              <DownloadButton bookId={book.Book_ID} />
               <button
                 onClick={handleLikeButton}
                 className={`flex items-center gap-2 text-sm font-semibold transition-all duration-200 ${

@@ -40,8 +40,8 @@ export const checkDownloadQuery = `
 
 // Adds a book to the Offline_Content list (marking it as downloaded but not yet read).
 export const addDownloadQuery = `
-    INSERT INTO Offline_Content (User_ID, Book_ID)
-    VALUES (?, ?);
+    INSERT INTO Offline_Content (User_ID, Book_ID, Page_Number)
+    VALUES (?, ?, ?);
 `;
 
 // Removes a book from the Offline_Content list.
@@ -49,6 +49,12 @@ export const removeDownloadQuery = `
     DELETE FROM Offline_Content
     WHERE User_ID = ? AND Book_ID = ?;
 `;
+
+// update percentage read
+export const updatePercentageReadQuery = `
+    UPDATE Offline_Content 
+    SET Page_Number = ?, Percentage_Read = ?, Last_Accessed = ?
+    WHERE User_ID = ? AND Book_ID = ?;`;
 
 // --- REVIEW QUERIES ---
 export const getTheReviewQuery = `SELECT * from Reviews WHERE User_ID = ? AND Book_ID = ?;`;
