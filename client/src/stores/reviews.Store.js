@@ -6,6 +6,18 @@ export const useUserReviewsStore = create((set) => ({
   review: null,
   error: null,
 
+  checkReviewEligibility: async (userId, bookId) => {
+    set({ isLoadingReview: true});
+    try {
+      await axiosInstance.get(`/users/reviewBookEligibility/${userId}/reviews/${bookId}`);
+      return true;
+    } catch (error) {
+      console.error('Error checking review eligibility:', error);
+      return false;  
+    } finally {
+      set({ isLoadingReview: false });
+    }
+  },
   // 🟢 Fetch a user's review for a specific book
   getTheReview: async ({ userId, bookId }) => {
     set({ isLoadingReview: true, error: null });

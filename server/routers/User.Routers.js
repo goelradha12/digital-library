@@ -15,6 +15,7 @@ import {
 } from "../validators/User.Validators.js";
 import { validate } from "../middleware/Validator.Middleware.js";
 import {
+  checkReviewEligibility,
   deleteAReview,
   getTheReviewIfExist,
   isBookLiked,
@@ -23,6 +24,7 @@ import {
   unLikeABook,
   updateAReview,
 } from "../controllers/UserBook.Controllers.js";
+import { check } from "express-validator";
 
 const router = Router();
 
@@ -61,5 +63,6 @@ router
   .post(reviewValidator(), validate, reviewABook)
   .put(reviewValidator(), validate, updateAReview)
   .delete(deleteAReview);
+router.get("/reviewBookEligibility/:userId/reviews/:bookId", checkReviewEligibility);
 
 export default router;

@@ -7,6 +7,7 @@ import { ThumbsUp, Download, Star, Heart } from 'lucide-react';
 import { useBookStore } from '../stores/book.Stores';
 import { useAuthStore } from '../stores/auth.Stores';
 import ReviewModal from '../components/ReviewModal';
+import { useUserReviewsStore } from '../stores/reviews.Store';
 
 const BookPage = () => {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ const BookPage = () => {
     authorBooks,
   } = useBookStore();
   const [isLiked, setIsLiked] = useState(false);
+  const [isEligibleForReview, setIsEligibleForReview] = useState(false);
+  const { checkReviewEligibility } = useUserReviewsStore();
   useEffect(() => {
     fetchABook(id);
 
@@ -41,6 +44,11 @@ const BookPage = () => {
       (async () => {
         const liked = await checkIfBookLiked(userId, id);
         setIsLiked(liked);
+      })();
+      // check for review eligibility
+      (async () => {
+        const eligible = await checkReviewEligibility(userId, id);
+        setIsEligibleForReview(eligible);
       })();
     }
   }, [id, userId]);
@@ -62,6 +70,19 @@ const BookPage = () => {
     } else {
       const success = await likeBook(userId, id);
       if (success) setIsLiked(true);
+    }
+  };
+
+  const handleReviewButtonClick = () => {
+    if (!User) {
+      alert('You must be logged in to write a review.');
+      navigate('/login');
+    } 
+    else if(!isEligibleForReview){
+      alert('Min 10% read is required to review the book.');
+    }
+    else {
+      setisReviewModalOpen(true);
     }
   };
   return (
@@ -221,14 +242,7 @@ const BookPage = () => {
                 User Reviews ({reviews.length})
               </h2>
               <button
-                onClick={() => {
-                  if (!User) {
-                    alert('You must be logged in to write a review.');
-                    navigate('/login');
-                  } else {
-                    setisReviewModalOpen(true);
-                  }
-                }}
+                onClick={handleReviewButtonClick}
                 className="px-4 py-2 rounded-full border-2 border-[#A56F6E] text-[#A56F6E] hover:bg-[#A56F6E] hover:text-white transition-all duration-300 font-semibold text-sm"
               >
                 Write a Review

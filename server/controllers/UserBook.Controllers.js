@@ -22,7 +22,7 @@ export const unLikeABook = async (req, res, next) => {
     const { userId, bookId } = req.params;
     await dbquery(removeLikeQuery, [userId, bookId]);
     res.json(
-      new apiResponse(200, null, "Book removed from likes successfully"),
+      new apiResponse(200, null, "Book removed from likes successfully")
     );
   } catch (error) {
     next(error);
@@ -61,6 +61,24 @@ export const isBookLiked = async (req, res, next) => {
  * Only those users, who has read 10% + book can review the book
  * One user can review a book only once
  */
+
+export const checkReviewEligibility = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const bookId = req.params.bookId;
+    const currReadResult = await dbquery(checkDownloadQuery, [userId, bookId]);
+    if (currReadResult.length == 0) {
+      throw new apiError(400, "Book never read/downloaded");
+    }
+    const currRead = currReadResult[0].Percentage_Read;
+    if (currRead < minRead) {
+      throw new apiError(400, "Minimum 10% read is required to review the book");
+    }
+    res.json(new apiResponse(200, null, "Eligible for review"));
+  } catch (error) {
+    next(error);
+  }
+};
 export const getTheReviewIfExist = async (req, res, next) => {
   try {
     const userId = req.params.userId;
