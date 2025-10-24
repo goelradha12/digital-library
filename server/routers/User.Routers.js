@@ -11,6 +11,7 @@ import {
 import { verifyUserByID } from "../middleware/Auth.Middlewares.js";
 import {
   reviewValidator,
+  updateReadProgressValidator,
   visitorRegistrationValidator,
 } from "../validators/User.Validators.js";
 import { validate } from "../middleware/Validator.Middleware.js";
@@ -26,6 +27,7 @@ import {
   unDownloadABook,
   unLikeABook,
   updateAReview,
+  updateReadProgress,
 } from "../controllers/UserBook.Controllers.js";
 import { check } from "express-validator";
 
@@ -76,6 +78,7 @@ router
   .route("/downloadBook/:userId/downloads/:bookId")
   .get(checkIFDownloaded)
   .post(downloadABook)
-  .delete(unDownloadABook);
+  .delete(unDownloadABook)
+  .put(updateReadProgressValidator(), validate, updateReadProgress);
 
 export default router;

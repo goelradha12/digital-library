@@ -10,6 +10,7 @@ import {
   removeDownloadQuery,
   removeLikeQuery,
   updateAReviewQuery,
+  updatePercentageReadQuery,
 } from "../Queries/UserBook.Queries.js";
 import { apiError } from "../utils/api.error.js";
 import { apiResponse } from "../utils/api.response.js";
@@ -72,7 +73,9 @@ export const checkReviewEligibility = async (req, res, next) => {
     if (currReadResult.length == 0) {
       throw new apiError(400, "Book never read/downloaded");
     }
+    console.log(currReadResult[0]);
     const currRead = currReadResult[0].Percentage_Read;
+    const minRead = minPercentageReadForBookReview;
     if (currRead < minRead) {
       throw new apiError(
         400,
@@ -161,6 +164,11 @@ export const deleteAReview = async (req, res, next) => {
   }
 };
 
+/**
+ *
+ * Controller related to Download and read a book
+ *
+ */
 export const checkIFDownloaded = async (req, res, next) => {
   try {
     const { userId, bookId } = req.params;
@@ -211,6 +219,33 @@ export const unDownloadABook = async (req, res, next) => {
       throw new apiError(404, "Error downloading the book");
     }
     res.json(new apiResponse(200, null, "Book access revoked successfully"));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateReadProgress = async (req, res, next) => {
+  try {
+    const { Page_Number, Percentage_Read } = req.body;
+    const { userId, bookId } = req.params;
+    if (!userId || !bookId) {
+      throw new apiError(400, "User ID and Book ID are required");
+    }
+    const result = await dbquery(updatePercentageReadQuery, [
+      Page_Number,
+      Percentage_Read,
+      new Date(),
+      userId,
+      bookId,
+    ]);
+    if (result.affectedRows == 0) {
+      throw new apiError(404, "Error updating read progress");
+    }
+    const data = {
+      Page_Number,
+      Percentage_Read,
+    };
+    res.json(new apiResponse(200, data, "Read progress updated successfully"));
   } catch (error) {
     next(error);
   }

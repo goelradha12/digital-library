@@ -43,3 +43,22 @@ export const reviewValidator = () => {
       .withMessage("rating must be between 1 and 5"),
   ];
 };
+
+export const updateReadProgressValidator = () => {
+  return [
+    body("Page_Number")
+      .not()
+      .trim()
+      .notEmpty()
+      .withMessage("Page_Number is required")
+      .isInt()
+      .withMessage("Page_Number must be an integer"),
+    body("Percentage_Read")
+      .not()
+      .trim()
+      .notEmpty()
+      .withMessage("Percentage_Read is required")
+      .isInt({ min: 0, max: 100 })
+      .withMessage("Percentage_Read must be between 0 and 100"),
+  ];
+};

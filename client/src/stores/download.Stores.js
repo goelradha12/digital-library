@@ -56,6 +56,21 @@ export const useDownloadsStore = create((set) => ({
     }
   },
 
+  updateReadingProgress: async ({ userId, bookId, pageNumber, totalPages }) => {
+    try {
+      const percentage = Math.floor((pageNumber / totalPages) * 100);
+
+      await axiosInstance.put(`/users/downloadBook/${userId}/downloads/${bookId}`, {
+        Page_Number: pageNumber,
+        Percentage_Read: percentage,
+      });
+
+      console.log(`Progress updated: ${percentage}%`);
+    } catch (error) {
+      console.error('Error updating reading progress:', error);
+    }
+  },
+
   // 🧹 Utility: clear local state
   clearDownloadState: () => set({ downloadedBook: null, error: null }),
 }));

@@ -16,6 +16,8 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { useBookStore } from '../stores/book.Stores';
 import BookDetailCard from '../components/bookDetailCard';
+import { useAuthStore } from '../stores/auth.Stores';
+import { useDownloadsStore } from '../stores/download.Stores';
 
 // ✅ Worker setup (must be at top level, before any React code runs)
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -62,7 +64,13 @@ export default function NotebookViewer() {
   const [isBookDetailDisplayed, setIsBookDetailDisplayed] = useState(false);
   const { book, fetchABook, isLoadingBook } = useBookStore();
   const navigate = useNavigate();
+  const { User } = useAuthStore();
+  const { updateReadingProgress } = useDownloadsStore();
 
+  if (!User) {
+    alert('Login before accessing the page');
+    navigate('/login');
+  }
   // fetch book details using bookId
   useEffect(() => {
     fetchABook(bookId);
@@ -134,6 +142,16 @@ export default function NotebookViewer() {
     }
 
     setGlobalPageNumber(nextPage);
+
+    // Update backend progress
+    if (User?.User_ID && bookId && totalBookPages) {
+      updateReadingProgress({
+        userId: User.User_ID,
+        bookId,
+        pageNumber: nextPage,
+        totalPages: totalBookPages,
+      });
+    }
   };
 
   const pageInChunk = globalPageNumber - chunkRange.start + 1;
