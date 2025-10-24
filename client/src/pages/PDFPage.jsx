@@ -19,6 +19,7 @@ import BookDetailCard from '../components/bookDetailCard';
 import { useAuthStore } from '../stores/auth.Stores';
 import { useDownloadsStore } from '../stores/download.Stores';
 
+import { debounce } from 'lodash';
 // ✅ Worker setup (must be at top level, before any React code runs)
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -66,6 +67,11 @@ export default function NotebookViewer() {
   const navigate = useNavigate();
   const { User } = useAuthStore();
   const { updateReadingProgress } = useDownloadsStore();
+
+  const debouncedUpdateProgress = useCallback(
+    debounce((data) => updateReadingProgress(data), 1000),
+    []
+  );
 
   if (!User) {
     alert('Login before accessing the page');
@@ -145,7 +151,7 @@ export default function NotebookViewer() {
 
     // Update backend progress
     if (User?.User_ID && bookId && totalBookPages) {
-      updateReadingProgress({
+      debouncedUpdateProgress({
         userId: User.User_ID,
         bookId,
         pageNumber: nextPage,
