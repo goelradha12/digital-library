@@ -190,7 +190,7 @@ const UserProfile = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/readBook/${book.Book_ID}`);
+                            navigate(`/readBook/${book.Book_ID}?page=${book.Page_Number || 1}`);
                           }}
                           className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 opacity-100 group-hover:opacity-100 transition-all duration-300 text-white text-lg font-semibold rounded-lg"
                           aria-label={`Continue reading ${book.Title}`}

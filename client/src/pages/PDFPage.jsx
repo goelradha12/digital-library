@@ -11,7 +11,7 @@ import {
   Home,
   Info,
 } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { useBookStore } from '../stores/book.Stores';
@@ -53,12 +53,17 @@ function ErrorBoundary({ children }) {
 }
 
 export default function NotebookViewer() {
+  const [searchParams] = useSearchParams();
   const bookId = useParams().bookid;
+  const initialPage = Number(searchParams.get('page')) || 1;
   const [bookTitle, setBookTitle] = useState('Book Title');
   const [fileUrl, setFileUrl] = useState(null);
-  const [chunkRange, setChunkRange] = useState({ start: 1, end: CHUNK_SIZE });
+  const [chunkRange, setChunkRange] = useState({
+    start: initialPage,
+    end: CHUNK_SIZE + initialPage - 1,
+  });
   const [numPagesInChunk, setNumPagesInChunk] = useState(0);
-  const [globalPageNumber, setGlobalPageNumber] = useState(1);
+  const [globalPageNumber, setGlobalPageNumber] = useState(initialPage);
   const [totalBookPages, setTotalBookPages] = useState(null);
   const [scale, setScale] = useState(1.0);
   const [loading, setLoading] = useState(true);
