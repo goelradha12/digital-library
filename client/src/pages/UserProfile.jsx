@@ -12,6 +12,7 @@ import {
   Edit3,
   MessageSquare,
   Info,
+  Menu,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/auth.Stores';
 import { axiosInstance } from '../utils/axios';
@@ -91,9 +92,10 @@ const UserProfile = () => {
     }
   };
 
-  const handleWriteOrEditReview = async (bookId) => {
+  const handleWriteOrEditReview = (bookId) => {
     setSelectedBookForReview(bookId);
     setIsReviewModalOpen(true);
+    setOpenMenuId(null); // Close the menu
   };
 
   const initials = User?.Name
@@ -116,17 +118,51 @@ const UserProfile = () => {
       <div className="bg-gray-50 min-h-screen pt-20 pb-12 font-sans text-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
-          <aside className="lg:w-1/4 bg-white rounded-xl shadow-lg p-8 h-fit">
+          <aside className="lg:w-1/4 bg-white rounded-xl shadow-lg p-8 h-fit lg:sticky lg:top-20">
             <div className="flex flex-col items-center text-center mb-6">
               <div className="w-32 h-32 rounded-full bg-[#E0D4D3] border-4 border-[#A56F6E] flex items-center justify-center text-5xl font-bold text-[#A56F6E] shadow-md">
                 {initials}
               </div>
-              <h1 className="text-3xl font-serif text-gray-900 mt-6">{Visitor?.Name}</h1>
+              <h1 className="text-3xl font-serif text-gray-900 mt-2">{Visitor?.Name}</h1>
               <p className="text-sm text-gray-500">{Visitor?.Email}</p>
             </div>
-            <div className="space-y-4">
-              <h2 className="text-xl font-serif font-medium text-[#A56F6E]">Account Details</h2>
-              <div className="space-y-3 text-gray-600 text-sm">
+
+            {/* Quick Navigation Menu */}
+            <nav className="mb-2 pt-2">
+              <h2 className="text-xl font-serif font-medium text-[#A56F6E]">Quick Menu</h2>
+              <ul className="">
+                <li>
+                  <a
+                    href="#downloaded-books-section"
+                    className="flex items-center gap-3 p-2 text-gray-700 hover:bg-[#A56F6E]/10 hover:text-[#A56F6E] rounded-md transition-colors"
+                  >
+                    <Download size={20} /> Downloaded Books
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#liked-books-section"
+                    className="flex items-center gap-3 p-2 text-gray-700 hover:bg-[#A56F6E]/10 hover:text-[#A56F6E] rounded-md transition-colors"
+                  >
+                    <Heart size={20} /> Liked Books
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#reviews-given-section"
+                    className="flex items-center gap-3 p-2 text-gray-700 hover:bg-[#A56F6E]/10 hover:text-[#A56F6E] rounded-md transition-colors"
+                  >
+                    <Star size={20} /> Reviews Given
+                  </a>
+                </li>
+              </ul>
+            </nav>
+
+            <div className="pt-2">
+              <h2 className="text-xl font-serif mb-2 font-medium text-[#A56F6E]">
+                Account Details
+              </h2>
+              <div className="space-y-3 text-gray-600 text-sm pl-2">
                 <p>
                   <span className="font-semibold text-gray-800">Member Since:</span>{' '}
                   {User?.Start_Date ? new Date(User.Start_Date).toLocaleDateString() : 'N/A'}
@@ -148,7 +184,7 @@ const UserProfile = () => {
           {/* Main Content */}
           <main className="lg:w-3/4 space-y-12">
             {/* Download books section */}
-            <section className="bg-white rounded-xl shadow-lg p-8">
+            <section id="downloaded-books-section" className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-serif font-medium text-[#A56F6E] mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Download size={24} /> <span>Downloaded Books</span>
@@ -237,14 +273,20 @@ const UserProfile = () => {
                               onClick={(e) => e.stopPropagation()}
                             >
                               <button
-                                onClick={() => navigate(`/books/${book.Book_ID}`)}
+                                onClick={() => {
+                                  navigate(`/books/${book.Book_ID}`);
+                                  setOpenMenuId(null);
+                                }}
                                 className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#A56F6E]/10 hover:text-[#A56F6E] transition"
                               >
                                 <Info size={16} className="mr-2" /> Book Details
                               </button>
 
                               <button
-                                onClick={() => navigate(`/readBook/${book.Book_ID}`)}
+                                onClick={() => {
+                                  navigate(`/readBook/${book.Book_ID}`);
+                                  setOpenMenuId(null);
+                                }}
                                 className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#A56F6E]/10 hover:text-[#A56F6E] rounded transition mb-1"
                               >
                                 <BookOpen size={16} className="mr-2" /> Read Now
@@ -263,7 +305,10 @@ const UserProfile = () => {
                               <div className="border-t border-gray-100 my-1" />
 
                               <button
-                                onClick={() => handleUnDownload(book.Book_ID)}
+                                onClick={() => {
+                                  handleUnDownload(book.Book_ID);
+                                  setOpenMenuId(null);
+                                }}
                                 className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-red-50 hover:text-red-500 transition"
                               >
                                 <Trash2 size={16} className="mr-2" /> Remove Download
@@ -283,7 +328,7 @@ const UserProfile = () => {
             </section>
 
             {/* ❤️ Liked Books */}
-            <section className="bg-white rounded-xl shadow-lg p-8">
+            <section id="liked-books-section" className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-serif font-medium text-[#A56F6E] mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Heart size={24} /> <span>Liked Books</span>
@@ -331,7 +376,7 @@ const UserProfile = () => {
             </section>
 
             {/* ⭐ Reviews Given */}
-            <section className="bg-white rounded-xl shadow-lg p-8">
+            <section id="reviews-given-section" className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-serif font-medium text-[#A56F6E] mb-8 flex items-center gap-3 border-b pb-3 border-gray-200">
                 <Star size={24} className="text-[#A56F6E]" /> Reviews Given
               </h2>
@@ -346,7 +391,7 @@ const UserProfile = () => {
                       <button
                         className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100"
                         title="Edit review"
-                        onClick={() => handleWriteOrEditReview(review.Book_ID, review)}
+                        onClick={() => handleWriteOrEditReview(review.Book_ID)}
                       >
                         <Edit3 size={16} className="text-gray-600" />
                       </button>
@@ -357,6 +402,11 @@ const UserProfile = () => {
                           src={`/unzipped_books/${review.Book_ID}.jpg`}
                           alt={review.Title}
                           className="w-full h-full object-cover rounded-md shadow"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              'https://placehold.co/120x160/F0F0F0/A56F6E?text=No+Cover';
+                          }}
                         />
                       </div>
 

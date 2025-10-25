@@ -20,6 +20,7 @@ import { useAuthStore } from '../stores/auth.Stores';
 import { useDownloadsStore } from '../stores/download.Stores';
 
 import { debounce } from 'lodash';
+import { axiosInstance } from '../utils/axios';
 // ✅ Worker setup (must be at top level, before any React code runs)
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -94,20 +95,23 @@ export default function NotebookViewer() {
   const fetchPdfChunk = useCallback(async () => {
     setLoading(true);
 
-    const res = await fetch(
-      `http://localhost:5000/pdf/${bookId}/pages?start=${chunkRange.start}&end=${chunkRange.end}`
-    );
+    const res = await axiosInstance.get(`/pdf/${bookId}/pages`, {
+      params: {
+        start: chunkRange.start,
+        end: chunkRange.end,
+      },
+      responseType: 'blob',
+    });
 
     if (res.status === 204) {
       setLoading(false);
       return;
     }
 
-    const total = res.headers.get('X-Total-Pages');
+    const total = res.headers['x-total-pages'];
     if (total) setTotalBookPages(Number(total));
 
-    const blob = await res.blob();
-    const blobUrl = URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(res.data);
 
     setFileUrl((old) => {
       if (old) URL.revokeObjectURL(old);
