@@ -17,6 +17,7 @@ import {
 import { useAuthStore } from '../stores/auth.Stores';
 import { axiosInstance } from '../utils/axios';
 import ReviewModal from '../components/ReviewModal'; // ✅ Modal for add/edit reviews
+import StreakTracker from '../components/StreakTracker';
 
 const UserProfile = () => {
   const { User, Visitor } = useAuthStore();
@@ -115,7 +116,7 @@ const UserProfile = () => {
   return (
     <>
       <Header />
-      <div className="bg-gray-50 min-h-screen pt-20 pb-12 font-sans text-gray-800">
+      <div className="bg-gray-50 min-h-screen pt-10 pb-12 font-sans text-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
           <aside className="lg:w-1/4 bg-white rounded-xl shadow-lg p-8 h-fit lg:sticky lg:top-20">
@@ -184,6 +185,7 @@ const UserProfile = () => {
           {/* Main Content */}
           <main className="lg:w-3/4 space-y-12">
             {/* Download books section */}
+            {User && <StreakTracker streakData={User} />}
             <section id="downloaded-books-section" className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-serif font-medium text-[#A56F6E] mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-2">
