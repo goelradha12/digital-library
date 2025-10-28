@@ -3,13 +3,11 @@ import { useNavigate } from 'react-router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuthStore } from '../stores/auth.Stores';
-import SubscriptionModal from '../components/SubscriptionModal';
-import { useState } from 'react';
+import LeaderboardSection from '../components/LeaderboardSection';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { Visitor, checkUserAuth, User, isLoading } = useAuthStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     async function checkUser() {
       await checkUserAuth(Visitor.Visitor_ID);
@@ -20,19 +18,6 @@ const HomePage = () => {
     }
   }, [Visitor]);
 
-  useEffect(() => {
-    if (isLoading) {
-      return;
-    }
-    if (!User) {
-      setIsModalOpen(true);
-    } else if (User && new Date(User.subscription_end_date) < new Date()) {
-      console.log('Subscription ended');
-      setIsModalOpen(true);
-    } else {
-      setIsModalOpen(false);
-    }
-  }, [isLoading, User]);
   return (
     <>
       <Header />
@@ -49,7 +34,7 @@ const HomePage = () => {
         ></div>
 
         {/* Main content layer, positioned on top of the background */}
-        <div className="max-w-4xl mx-auto text-center px-6 py-16 relative z-10">
+        <div className="max-w-4xl mx-auto text-center px-6 my-12 relative z-10">
           <h1
             className="text-5xl md:text-6xl font-serif leading-tight mb-4 animate-fadeIn"
             style={{ color: '#A56F6E' }}
@@ -69,7 +54,10 @@ const HomePage = () => {
           </button>
         </div>
       </div>
-      <SubscriptionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <div className="my-10">
+        <LeaderboardSection />
+      </div>
+
       <Footer />
     </>
   );

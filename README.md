@@ -23,15 +23,20 @@ USE Library_Management;
     Reward_Points INT DEFAULT 0 CHECK (Reward_Points >= 0),
     Accessibility_Settings JSON,
     Visitor_ID VARCHAR(12) UNIQUE,
+    subscription_end_date date,
+    Current_Streak INT DEFAULT 0,
+    Longest_Streak INT DEFAULT 0,
+    Last_Read_Date DATE DEFAULT NULL,
     FOREIGN KEY (Visitor_ID) REFERENCES Visitor(Visitor_ID) 
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
 ## CREATE TABLE Transaction (
-    Transaction_ID VARCHAR(12) PRIMARY KEY,
+    Transaction_ID VARCHAR(40) PRIMARY KEY,
     User_ID VARCHAR(12) NOT NULL,
     Amount_Paid DECIMAL(10,2) NOT NULL CHECK (Amount_Paid >= 0),
+    Razorpay_Payment_ID VARCHAR(40) AFTER Transaction_ID,
     Payment_Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Payment_Method VARCHAR(50) NOT NULL,
     FOREIGN KEY (User_ID) REFERENCES User(User_ID) 
@@ -106,7 +111,7 @@ USE Library_Management;
     Book_ID VARCHAR(12),
     Page_Number INT NOT NULL CHECK (Page_Number > 0),
     Last_Accessed DATE,
-    Download_Date DATE,
+    Download_Date DATE DEFAULT (Current_Date),
     Percentage_Read INT DEFAULT 0 CHECK (Percentage_Read BETWEEN 0 AND 100),
     PRIMARY KEY (User_ID, Book_ID),
     FOREIGN KEY (User_ID) REFERENCES User(User_ID) ON DELETE CASCADE ON UPDATE CASCADE,

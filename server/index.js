@@ -16,6 +16,7 @@ import authUserRouter from "./routers/User.Routers.js";
 import publisherRouter from "./routers/Publisher.Routes.js";
 import paymentRouter from "./routers/Payment.Routes.js";
 import pdfViewerRouter from "./routers/PDFVierwer.Routers.js";
+import leaderboardRouter from "./routers/LeaderBoard.Routers.js";
 import { apiError } from "./utils/api.error.js";
 
 app.use(express.json());
@@ -35,6 +36,8 @@ app.use("/users", authUserRouter);
 app.use("/publishers", publisherRouter);
 app.use("/payments", paymentRouter);
 app.use("/pdf", pdfViewerRouter);
+app.use("/leaderboard", leaderboardRouter);
+
 // Centralized error middleware
 app.use((err, req, res, next) => {
   console.error("Error:", err);

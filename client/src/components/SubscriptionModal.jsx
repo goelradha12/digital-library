@@ -5,12 +5,24 @@ import { useAuthStore } from '../stores/auth.Stores';
 
 const SUBSCRIPTION_PRICE = '₹600/yr';
 
-const SubscriptionModal = ({ isOpen, onClose }) => {
-  const { User } = useAuthStore();
+const SubscriptionModal = () => {
+  const { Visitor, checkUserAuth, User, isLoading } = useAuthStore();
   const navigate = useNavigate();
-  if (!isOpen) {
-    return null;
-  }
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (!User) {
+      setIsModalOpen(true);
+    } else if (User && new Date(User.subscription_end_date) < new Date()) {
+      console.log('Subscription ended');
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
+  }, [isLoading, User]);
 
   // Simple function to navigate/handle subscription action
   const handleCtaClick = () => {
@@ -25,6 +37,9 @@ const SubscriptionModal = ({ isOpen, onClose }) => {
     navigate('/login');
   };
 
+  if (!isModalOpen) {
+    return null;
+  }
   return (
     <div className="fixed inset-0 bg-gray-500/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm relative transform scale-100 transition-transform duration-300">

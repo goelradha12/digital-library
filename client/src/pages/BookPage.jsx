@@ -9,12 +9,15 @@ import { useAuthStore } from '../stores/auth.Stores';
 import ReviewModal from '../components/ReviewModal';
 import { useUserReviewsStore } from '../stores/reviews.Store';
 import DownloadButton from '../components/DownloadButton';
+import SubscriptionModal from '../components/SubscriptionModal';
 
 const BookPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { User, likeBook, unLikeBook, checkIfBookLiked } = useAuthStore();
   const [isReviewModalOpen, setisReviewModalOpen] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   var userId;
   if (!User) {
     // show the modal
@@ -306,6 +309,7 @@ const BookPage = () => {
           </section>
         )}
       </div>
+      <SubscriptionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <Footer />
     </>
   );

@@ -15,6 +15,7 @@ import UserProfile from './pages/UserProfile';
 import Accessibility from './pages/Accessibility';
 import SubscriptionPage from './pages/SubscriptionPage';
 import PDFPage from './pages/PDFPage';
+import ProtectedLayout from './components/ProtectedLayout';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -22,17 +23,19 @@ createRoot(document.getElementById('root')).render(
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/books/:id" element={<BookPage />} />
-      <Route path="/books" element={<Books />} />
       <Route path="/aboutUs" element={<AboutUs />} />
-      <Route path="/authors" element={<Authors />} />
-      <Route path="/authors/:id" element={<AuthorPage />} />
-      <Route path="/publishers" element={<Publishers />} />
-      <Route path="/publishers/:id" element={<PublisherPage />} />
-      <Route path="/userProfile" element={<UserProfile />} />
-      <Route path="/accessibility" element={<Accessibility />} />
-      <Route path="/subscription" element={<SubscriptionPage />} />
-      <Route path="/readBook/:bookid" element={<PDFPage />} />
+      <Route path="/books" element={<Books />} />
+      <Route element={<ProtectedLayout />}>
+        <Route path="/books/:id" element={<BookPage />} />
+        <Route path="/authors" element={<Authors />} />
+        <Route path="/authors/:id" element={<AuthorPage />} />
+        <Route path="/publishers" element={<Publishers />} />
+        <Route path="/publishers/:id" element={<PublisherPage />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/accessibility" element={<Accessibility />} />
+        <Route path="/subscription" element={<SubscriptionPage />} />
+        <Route path="/readBook/:bookid" element={<PDFPage />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
