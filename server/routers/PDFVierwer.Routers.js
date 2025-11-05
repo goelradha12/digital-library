@@ -44,14 +44,14 @@ router.get("/:bookId/pages", async (req, res) => {
 
     // Optional watermark to discourage sharing
     const pages = newPdf.getPages();
-    pages.forEach((page, idx) => {
-      page.drawText(`Book ID: ${bookId} | Pages ${start}-${end}`, {
-        x: 50,
-        y: 25,
-        size: 8,
-        opacity: 1,
-      });
-    });
+    // pages.forEach((page, idx) => {
+    //   page.drawText(`Book ID: ${bookId} | Pages ${start}-${end}`, {
+    //     x: 50,
+    //     y: 25,
+    //     size: 8,
+    //     opacity: 1,
+    //   });
+    // });
 
     const newPdfBytes = await newPdf.save();
 

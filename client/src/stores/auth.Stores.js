@@ -10,9 +10,10 @@ export const useAuthStore = create((set) => ({
       set({ isLoading: true });
       const response = await axiosInstance.post('/users', data);
       set({ Visitor: response.data?.data });
+      return response.data?.data;
       // check if user is a User or not
     } catch (error) {
-      set({ Visitor: {} });
+      set({ Visitor: null });
     } finally {
       set({ isLoading: false });
     }
@@ -23,8 +24,8 @@ export const useAuthStore = create((set) => ({
       console.log('Fetching User...', id);
       set({ isLoading: true });
       const response = await axiosInstance.get(`/users/getUser/${id}`);
-      set({ User: response.data.data, isSubscribed: true });
-      console.log(response.data);
+      set({ User: response.data?.data, isSubscribed: true });
+      return response.data?.data;
     } catch (error) {
       console.log(error);
       set({ User: null, isSubscribed: false });

@@ -18,18 +18,31 @@ import { useAuthStore } from '../stores/auth.Stores';
 import { axiosInstance } from '../utils/axios';
 import ReviewModal from '../components/ReviewModal'; // ✅ Modal for add/edit reviews
 import StreakTracker from '../components/StreakTracker';
+import { useUserBookStore } from '../stores/userBook.Stores';
 
 const UserProfile = () => {
   const { User, Visitor } = useAuthStore();
   const navigate = useNavigate();
-  const [likedBooks, setLikedBooks] = useState([]);
-  const [downloadedBooks, setDownloadedBooks] = useState([]);
-  const [reviewsGiven, setReviewsGiven] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedBookForReview, setSelectedBookForReview] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
-
+  const {
+    likedBooks,
+    downloadedBooks,
+    reviewsGiven,
+    isLoadingUserBooks,
+    fetchLikedBooks,
+    fetchDownloadedBooks,
+    fetchReviewedBooks,
+    unlikeBook,
+    removeDownloadedBook,
+  } = useUserBookStore();
+  useEffect(() => {
+    if (!User && !Visitor) {
+      navigate('/login');
+    }
+  });
   // Effect to handle closing the menu when clicking outside of it
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -48,50 +61,15 @@ const UserProfile = () => {
     };
   }, [openMenuId]);
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!User) {
-        setLoading(false);
-        return;
-      }
-      const userId = User.User_ID;
-      setLoading(true);
-      try {
-        const likedBookRes = await axiosInstance.get(`/users/likedBooks/${userId}`);
-        setLikedBooks(likedBookRes.data.data);
-
-        const downloadedBookRes = await axiosInstance.get(`/users/downloadedBooks/${userId}`);
-        setDownloadedBooks(downloadedBookRes.data.data);
-
-        const reviewdBookRes = await axiosInstance.get(`/users/reviewdBooks/${userId}`);
-        setReviewsGiven(reviewdBookRes.data.data);
-      } catch (error) {
-        console.error('Error fetching user profile data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUserData();
+    if (User) {
+      fetchLikedBooks(User.User_ID);
+      fetchDownloadedBooks(User.User_ID);
+      fetchReviewedBooks(User.User_ID);
+    }
   }, [User]);
 
-  const handleUnlike = async (bookId) => {
-    if (!window.confirm('Remove this book from liked list?')) return;
-    try {
-      await axiosInstance.delete(`/users/likeBook/${User.User_ID}/likes/${bookId}`);
-      setLikedBooks((prev) => prev.filter((book) => book.Book_ID !== bookId));
-    } catch (error) {
-      console.error('Error unliking book:', error);
-    }
-  };
-
-  const handleUnDownload = async (bookId) => {
-    if (!window.confirm('Remove this book from downloads?')) return;
-    try {
-      await axiosInstance.delete(`/users/downloadBook/${User.User_ID}/downloads/${bookId}`);
-      setDownloadedBooks((prev) => prev.filter((book) => book.Book_ID !== bookId));
-    } catch (error) {
-      console.error('Error removing downloaded book:', error);
-    }
-  };
+  const handleUnlike = (bookId) => unlikeBook(User.User_ID, bookId);
+  const handleUnDownload = (bookId) => removeDownloadedBook(User.User_ID, bookId);
 
   const handleWriteOrEditReview = (bookId) => {
     setSelectedBookForReview(bookId);
@@ -192,12 +170,12 @@ const UserProfile = () => {
                   <Download size={24} /> <span>Downloaded Books</span>
                 </div>
                 <span className="text-sm font-semibold text-gray-600">
-                  {downloadedBooks.length} items
+                  {downloadedBooks?.length} items
                 </span>
               </h2>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                {downloadedBooks.length > 0 ? (
+                {downloadedBooks?.length > 0 ? (
                   downloadedBooks.map((book) => (
                     <div
                       key={book.Book_ID}
@@ -336,12 +314,12 @@ const UserProfile = () => {
                   <Heart size={24} /> <span>Liked Books</span>
                 </div>
                 <span className="text-sm font-semibold text-gray-600">
-                  {likedBooks.length} items
+                  {likedBooks?.length} items
                 </span>
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                {likedBooks.length > 0 ? (
-                  likedBooks.map((book) => (
+                {likedBooks?.length > 0 ? (
+                  likedBooks?.map((book) => (
                     <div
                       key={book.Book_ID}
                       className="relative group cursor-pointer"
@@ -383,7 +361,7 @@ const UserProfile = () => {
                 <Star size={24} className="text-[#A56F6E]" /> Reviews Given
               </h2>
 
-              {reviewsGiven.length > 0 ? (
+              {reviewsGiven?.length > 0 ? (
                 <div className="grid sm:grid-cols-2 gap-6">
                   {reviewsGiven.map((review) => (
                     <div

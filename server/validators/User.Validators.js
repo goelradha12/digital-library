@@ -2,12 +2,18 @@ import { body } from "express-validator";
 
 export const visitorRegistrationValidator = () => {
   return [
-    body("name").not().trim().notEmpty().withMessage("name is required"),
+    body("name")
+      .not()
+      .trim()
+      .notEmpty()
+      .withMessage("name is required")
+      .toLowerCase(),
     body("email")
       .not()
       .trim()
       .notEmpty()
       .withMessage("email is required")
+      .toLowerCase()
       .isEmail()
       .withMessage("email is invalid"),
     body("password")
@@ -20,6 +26,24 @@ export const visitorRegistrationValidator = () => {
       .trim()
       .isIn(["India", "United States", "Italy", "France"])
       .withMessage("country is invalid"),
+  ];
+};
+
+export const visitorLoginValidator = () => {
+  return [
+    body("email")
+      .not()
+      .trim()
+      .notEmpty()
+      .withMessage("email is required")
+      .toLowerCase()
+      .isEmail()
+      .withMessage("email is invalid"),
+    body("password")
+      .not()
+      .trim()
+      .notEmpty()
+      .withMessage("password is required"),
   ];
 };
 

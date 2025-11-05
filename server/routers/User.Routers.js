@@ -12,6 +12,7 @@ import { verifyUserByID } from "../middleware/Auth.Middlewares.js";
 import {
   reviewValidator,
   updateReadProgressValidator,
+  visitorLoginValidator,
   visitorRegistrationValidator,
 } from "../validators/User.Validators.js";
 import { validate } from "../middleware/Validator.Middleware.js";
@@ -33,7 +34,7 @@ import { check } from "express-validator";
 
 const router = Router();
 
-router.post("/", getVisitor);
+router.post("/", visitorLoginValidator(), validate, getVisitor);
 router.get("/getUser/:id", getUserByVisitorID);
 
 // Books data related to user goes here

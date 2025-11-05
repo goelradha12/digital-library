@@ -174,23 +174,6 @@ export default function NotebookViewer() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 font-sans">
-      {/* 🧭 Navigation Bar */}
-      <div className="flex items-center justify-between px-6 py-3 absolute right-0 shadow-md">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 hover:text-[#F0E8E8]"
-          >
-            <Home size={16} /> <span>Home</span>
-          </button>
-          <button
-            onClick={() => setIsBookDetailDisplayed(true)}
-            className="flex cursor-pointer items-center gap-2 hover:text-[#F0E8E8]"
-          >
-            <Info size={16} /> <span>Book Details</span>
-          </button>
-        </div>
-      </div>
       <div className="flex flex-grow overflow-hidden">
         {/* Sidebar */}
         <div className="w-32 overflow-y-auto border-r border-gray-200 bg-white p-2">
@@ -239,22 +222,37 @@ export default function NotebookViewer() {
             <span className="text-sm">
               Page <b>{globalPageNumber}</b> of {totalBookPages || '...'}
             </span>
+            {/* Page nav buttons */}
+            <div className="flex border border-gray-300 rounded-xl">
+              <button
+                onClick={() => handlePageChange('prev')}
+                disabled={globalPageNumber <= 1}
+                className="flex items-center gap-2 px-4 py-2  text-gray-700 hover:bg-[#A56F6E] hover:text-white disabled:opacity-50"
+              >
+                <ChevronLeft size={20} /> Prev
+              </button>
+              <button
+                onClick={() => handlePageChange('next')}
+                disabled={totalBookPages && globalPageNumber >= totalBookPages}
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-[#A56F6E] hover:text-white disabled:opacity-50"
+              >
+                Next <ChevronRight size={20} />
+              </button>
+            </div>
             <div className="flex gap-3">
               <Bookmark size={18} />
               <Maximize size={18} />
             </div>
           </div>
-
           {/* 📊 Progress bar */}
-          <div className="w-full max-w-3xl h-3 bg-gray-200 overflow-hidden mb-3">
+          <div className="w-full max-w-3xl h-3 bg-gray-200 overflow-hidden rounded-full">
             <div
-              className="h-full bg-[#A56F6E] transition-all duration-300"
+              className="h-full bg-[#A56F6E] transition-all duration-300 rounded-full"
               style={{ width: `${progress}%` }}
             />
           </div>
-
           {/* Main PDF Page */}
-          <div className="bg-white shadow-2xl rounded-lg max-h-[80vh] overflow-y-auto flex justify-center items-center">
+          <div className="bg-white shadow-2xl rounded-lg max-h-[80vh] overflow-y-auto flex justify-center items-center relative">
             {loading || !fileUrl ? (
               <div className="flex items-center justify-center h-[500px] w-[800px] text-gray-500">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#A56F6E]" />
@@ -274,22 +272,21 @@ export default function NotebookViewer() {
               </ErrorBoundary>
             )}
           </div>
-
-          {/* Page nav buttons */}
-          <div className="flex space-x-8 mt-6">
+        </div>
+        {/* 🧭 Navigation Bar */}
+        <div className="flex items-center justify-between px-6 py-3 absolute right-0 shadow-md">
+          <div className="flex items-center gap-4">
             <button
-              onClick={() => handlePageChange('prev')}
-              disabled={globalPageNumber <= 1}
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-[#A56F6E] hover:text-white disabled:opacity-50"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 hover:text-[#F0E8E8]"
             >
-              <ChevronLeft size={20} /> Previous
+              <Home size={16} /> <span>Home</span>
             </button>
             <button
-              onClick={() => handlePageChange('next')}
-              disabled={totalBookPages && globalPageNumber >= totalBookPages}
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-[#A56F6E] hover:text-white disabled:opacity-50"
+              onClick={() => setIsBookDetailDisplayed(true)}
+              className="flex cursor-pointer items-center gap-2 hover:text-[#F0E8E8]"
             >
-              Next <ChevronRight size={20} />
+              <Info size={16} /> <span>Book Details</span>
             </button>
           </div>
         </div>

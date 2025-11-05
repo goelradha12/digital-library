@@ -136,7 +136,10 @@ const SubscriptionPage = () => {
 
   // Handle CTA Click based on state
   const handleCtaClick = async () => {
-    if (!isLoggedIn) return navigate('/login');
+    console.log('Clicked by: ', User, Visitor);
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
     setIsProcessing(true);
     await initiatePaymentProcess();
     setIsProcessing(false);

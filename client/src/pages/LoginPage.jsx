@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, ChevronLeft, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, ChevronLeft, Eye, EyeOff, User } from 'lucide-react';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router';
 import { useAuthStore } from '../stores/auth.Stores';
@@ -33,9 +33,15 @@ const Login = () => {
     }
 
     try {
-      await checkVisitorAuth(loginData);
-      console.log('Data fetched');
+      let visitor = await checkVisitorAuth(loginData);
 
+      if (!visitor) {
+        alert('User not found. Please register first.');
+        return;
+      }
+      let user = await checkUserAuth(visitor?.Visitor_ID);
+      console.log('Data fetched', user, visitor);
+      alert('Login successful!');
       setLoginData({ email: '', password: '' });
       navigate('/');
     } catch (error) {
