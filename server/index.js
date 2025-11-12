@@ -1,6 +1,7 @@
 import dotenv from "dotenv/config";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(
@@ -10,6 +11,7 @@ app.use(
     exposedHeaders: ["X-Total-Pages"],
   }),
 );
+app.use(cookieParser());
 import bookRouter from "./routers/Book.Routers.js";
 import authorRouter from "./routers/Author.Routers.js";
 import authUserRouter from "./routers/User.Routers.js";
@@ -17,6 +19,7 @@ import publisherRouter from "./routers/Publisher.Routes.js";
 import paymentRouter from "./routers/Payment.Routes.js";
 import pdfViewerRouter from "./routers/PDFVierwer.Routers.js";
 import leaderboardRouter from "./routers/LeaderBoard.Routers.js";
+import adminRouter from "./routers/Admin.Routers.js";
 import { apiError } from "./utils/api.error.js";
 
 app.use(express.json());
@@ -37,6 +40,7 @@ app.use("/publishers", publisherRouter);
 app.use("/payments", paymentRouter);
 app.use("/pdf", pdfViewerRouter);
 app.use("/leaderboard", leaderboardRouter);
+app.use("/admin", adminRouter);
 
 // Centralized error middleware
 app.use((err, req, res, next) => {

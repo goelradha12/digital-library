@@ -16,6 +16,10 @@ import Accessibility from './pages/Accessibility';
 import SubscriptionPage from './pages/SubscriptionPage';
 import PDFPage from './pages/PDFPage';
 import ProtectedLayout from './components/ProtectedLayout';
+import ProtectedRoute from './utils/ProtectedRoute';
+import AdminLogin from './pages/admin/Login';
+import Dashboard from './pages/admin/Dashboard';
+import BooksAdmin from './pages/admin/BooksAdmin';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -36,6 +40,23 @@ createRoot(document.getElementById('root')).render(
         <Route path="/subscription" element={<SubscriptionPage />} />
         <Route path="/readBook/:bookid" element={<PDFPage />} />
       </Route>
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/books"
+        element={
+          <ProtectedRoute>
+            <BooksAdmin />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   </BrowserRouter>
