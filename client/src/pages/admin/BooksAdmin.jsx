@@ -89,15 +89,6 @@ const BooksAdmin = () => {
                     <td className="py-3 px-5">{book.Authors? (book.Authors): ""}</td>
                     <td className="py-3 px-5 text-center space-x-3">
                       <button
-                        onClick={() => {
-                          setEditBook(book);
-                          setShowModal(true);
-                        }}
-                        className="text-[#A56F6E] font-medium hover:underline"
-                      >
-                        Edit
-                      </button>
-                      <button
                         onClick={() => handleDelete(book.Book_ID)}
                         className="text-red-600 font-medium hover:underline"
                       >

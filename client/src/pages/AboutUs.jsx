@@ -1,18 +1,33 @@
-import React from 'react';
-import { Linkedin, Github } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Linkedin, Github, BookOpen, ClipboardList, Clock, Search } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+
 const AboutUs = () => {
+  const clickSound = useRef(null);
+
+  // Play click sound on click
+  const handleClick = () => {
+    if (clickSound.current) {
+      clickSound.current.currentTime = 0;
+      clickSound.current.play();
+    }
+  };
+
   return (
     <>
+      {/* Sound Effect */}
+      <audio ref={clickSound} src="/click.mp3" preload="auto"></audio>
+
       <Header />
 
-      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col items-center px-6 py-12">
+      <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col items-center px-6 py-12 relative">
         {/* Background pattern */}
         <div
           className="absolute inset-0 bg-repeat"
           style={{
-            backgroundImage: "url('/bookshelf-pattern.svg')",
+            backgroundImage: "url('/library-pattern.svg')",
             backgroundSize: '100px',
             opacity: 0.1,
             zIndex: 0,
@@ -25,76 +40,105 @@ const AboutUs = () => {
             Digital Library Management System
           </h1>
           <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-            The <b>Digital Library Management System (DLMS)</b> is designed to revolutionize how
-            students, faculty, and administrators access and manage knowledge. Centralized, secure,
-            and user-friendly.
+            The <b>Digital Library Management System (DLMS)</b> is a web-based platform that allows
+            users to read and download <b>digital books and learning materials</b> anytime and
+            anywhere. It provides an easy interface to browse, search, and access e-books stored in
+            a <b>MySQL database</b>, promoting paperless and accessible learning.
           </p>
         </header>
 
-        {/* Objectives Section */}
-        <section className="relative max-w-6xl w-full mb-12 z-10">
-          <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6 text-center">Objectives</h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Why Choose Our Library Section */}
+        <section className="relative max-w-6xl w-full mb-16 z-10">
+          <h2 className="text-2xl font-semibold text-[#A56F6E] mb-8 text-center">
+            Why Choose Our Library
+          </h2>
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                title: 'Centralised Information',
-                desc: 'Store e-books, research papers, and multimedia content securely.',
+                icon: <BookOpen className="w-12 h-12 text-[#A56F6E]" />,
+                title: 'Extensive Collection',
+                desc: 'Access thousands of books across various genres and topics.',
               },
               {
-                title: 'Remote Access',
-                desc: 'Access resources anytime, anywhere using desktop or mobile.',
+                icon: <ClipboardList className="w-12 h-12 text-[#A56F6E]" />,
+                title: 'Easy Management',
+                desc: 'Simple admin tools to add,categorize and delete book data.',
               },
               {
-                title: 'User Roles',
-                desc: 'Secure login with specific permissions for students, faculty, and admins.',
+                icon: <Clock className="w-12 h-12 text-[#A56F6E]" />,
+                title: '24/7 Access',
+                desc: 'Browse and manage your books anytime, anywhere.',
               },
               {
-                title: 'Analytics',
-                desc: 'Track popular books, user activity, and generate usage reports.',
+                icon: <Search className="w-12 h-12 text-[#A56F6E]" />,
+                title: 'Smart Search',
+                desc: 'Find your next read with our search system.',
               },
-            ].map((obj, i) => (
-              <div
+            ].map((feature, i) => (
+              <motion.div
                 key={i}
-                className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 hover:shadow-[#A56F6E]/50 transition"
+                onClick={handleClick}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.2, duration: 0.6, ease: 'easeOut' }}
+                whileHover={{
+                  scale: 1.05,
+                  rotate: [-1, 1, 0],
+                  transition: { duration: 0.3 },
+                }}
+                className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-8 flex flex-col items-center text-center hover:shadow-[#A56F6E]/50 cursor-pointer transform transition"
               >
-                <h3 className="text-lg font-semibold text-[#A56F6E] mb-2">{obj.title}</h3>
-                <p className="text-gray-600 text-sm">{obj.desc}</p>
-              </div>
+                <motion.div
+                  whileHover={{ scale: 1.2, rotate: 10 }}
+                  transition={{ duration: 0.3 }}
+                  className="mb-4"
+                >
+                  {feature.icon}
+                </motion.div>
+                <h3 className="text-lg font-semibold text-[#A56F6E] mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.desc}</p>
+              </motion.div>
             ))}
           </div>
         </section>
 
-        {/* Future Enhancements */}
+        {/* Key Features Section */}
         <section className="relative max-w-6xl w-full mb-12 z-10">
-          <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6 text-center">
-            Future Enhancements
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6 text-center">Key Features</h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
+              { title: 'E-Book Access', desc: 'Users can read and download e-books directly.' },
+              { title: 'Book Management', desc: 'Admins can upload, edit, or remove books.' },
               {
-                title: 'AI Recommendations',
-                desc: 'Personalized book suggestions based on user history.',
+                title: 'Search Functionality',
+                desc: 'Quickly find books by title, author, or category.',
               },
               {
-                title: 'Accessibility',
-                desc: 'Text-to-speech, adjustable fonts, high-contrast themes.',
+                title: 'Reading Interface',
+                desc: 'Simple, user-friendly layout for comfortable reading.',
               },
+              { title: 'Download Option', desc: 'Download e-books for offline reading anytime.' },
               {
-                title: 'Gamification',
-                desc: 'Badges, leaderboards, and achievements to motivate users.',
+                title: 'Category Sorting',
+                desc: 'Books are organized by subject and genre for easy browsing.',
               },
-              {
-                title: 'AI Chatbot',
-                desc: 'Virtual assistant to help users find resources and answer queries.',
-              },
-            ].map((enhance, i) => (
-              <div
+              { title: 'Responsive Design', desc: 'Works smoothly on all screen sizes.' },
+              { title: 'Database Integration', desc: 'MySQL securely stores all e-book data.' },
+            ].map((feature, i) => (
+              <motion.div
                 key={i}
-                className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 hover:shadow-[#A56F6E]/50 transition"
+                onClick={handleClick}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.4 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 hover:shadow-[#A56F6E]/50 transition cursor-pointer"
               >
-                <h3 className="text-lg font-semibold text-[#A56F6E] mb-2">{enhance.title}</h3>
-                <p className="text-gray-600 text-sm">{enhance.desc}</p>
-              </div>
+                <h3 className="text-lg font-semibold text-[#A56F6E] mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.desc}</p>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -112,9 +156,9 @@ const AboutUs = () => {
               },
               {
                 name: 'Radha Goyal',
-                role: 'Full-stack Developer',
+                role: 'Full Stack Developer',
                 linkedin: 'https://www.linkedin.com/in/goyalradha123/',
-                github: 'https://github.com/radha-goyal',
+                github: 'https://github.com/goelradha12',
               },
               {
                 name: 'Akriti Sharma',
@@ -132,18 +176,21 @@ const AboutUs = () => {
                 name: 'Shivangi Gupta',
                 role: 'Frontend Developer',
                 linkedin: 'https://www.linkedin.com/in/shivangi-gupta-nitbhopal/',
-                github: 'https://github.com/shivangi-gupta',
+                github: 'https://github.com/shivangi-guptaa',
               },
               {
                 name: 'Ankit Kumar',
-                role: 'Frontend Developer',
+                role: 'Backend Developer',
                 linkedin: 'https://www.linkedin.com/in/ankitkumarazm/',
                 github: 'https://github.com/ankit-kumar',
               },
             ].map((member, i) => (
-              <div
+              <motion.div
                 key={i}
-                className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 flex flex-col items-center space-y-4 hover:shadow-[#A56F6E]/50 transition transform hover:scale-105"
+                onClick={handleClick}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-2xl shadow-lg shadow-[#A56F6E]/30 p-6 flex flex-col items-center space-y-4 hover:shadow-[#A56F6E]/50 transition cursor-pointer"
               >
                 <div className="w-20 h-20 rounded-full bg-[#A56F6E] flex items-center justify-center text-white font-bold text-xl">
                   {member.name.charAt(0)}
@@ -155,6 +202,10 @@ const AboutUs = () => {
                     href={member.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClick();
+                    }}
                     className="hover:text-[#A56F6E]"
                   >
                     <Linkedin className="w-5 h-5" />
@@ -163,12 +214,16 @@ const AboutUs = () => {
                     href={member.github}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClick();
+                    }}
                     className="hover:text-gray-800"
                   >
                     <Github className="w-5 h-5" />
                   </a>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -177,17 +232,21 @@ const AboutUs = () => {
         <section className="relative max-w-6xl w-full mb-12 z-10 text-center">
           <h2 className="text-2xl font-semibold text-[#A56F6E] mb-6">Technology Stack</h2>
           <div className="flex flex-wrap justify-center gap-4">
-            {['React', 'Node.js', 'Express', 'MongoDB', 'Analytics & AI'].map((tech, i) => (
-              <div
+            {['React', 'Node.js', 'Express', 'MySQL', 'Tailwind CSS'].map((tech, i) => (
+              <motion.div
                 key={i}
-                className="bg-white rounded-2xl px-4 py-2 shadow-lg shadow-[#A56F6E]/30 hover:shadow-[#A56F6E]/50 transition"
+                onClick={handleClick}
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-2xl px-4 py-2 shadow-lg shadow-[#A56F6E]/30 hover:shadow-[#A56F6E]/50 transition cursor-pointer"
               >
                 {tech}
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
       </div>
+
       <Footer />
     </>
   );
