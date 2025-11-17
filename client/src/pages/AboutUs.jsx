@@ -180,7 +180,7 @@ const AboutUs = () => {
               },
               {
                 name: 'Ankit Kumar',
-                role: 'Backend Developer',
+                role: 'Frontend Developer',
                 linkedin: 'https://www.linkedin.com/in/ankitkumarazm/',
                 github: 'https://github.com/ankit-kumar',
               },

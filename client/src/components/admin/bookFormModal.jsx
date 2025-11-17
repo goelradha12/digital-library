@@ -35,8 +35,8 @@ const MiniAddModal = ({ title, placeholder, onSave, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-5 shadow-xl w-full max-w-sm">
-        <h3 className="text-lg font-semibold text-[#A56F6E] mb-3 text-center">
+      <div className="bg-white rounded-xl p-6 shadow-2xl w-full max-w-sm">
+        <h3 className="text-xl font-serif text-[#A56F6E] mb-4 text-center">
           Add New {title}
         </h3>
         <input
@@ -44,18 +44,18 @@ const MiniAddModal = ({ title, placeholder, onSave, onClose }) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={placeholder}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:ring-1 focus:ring-[#A56F6E] outline-none"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-[#A56F6E] outline-none transition duration-150"
         />
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 border border-gray-400 rounded-full text-sm hover:bg-gray-100"
+            className="px-4 py-2 border border-gray-400 rounded-full text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-5 py-1.5 bg-[#A56F6E] text-white rounded-full text-sm hover:bg-[#8F5B5A]"
+            className="px-5 py-2 bg-[#A56F6E] text-white rounded-full text-sm hover:bg-[#8F5B5A] shadow-md transition duration-150"
           >
             Save
           </button>
@@ -97,13 +97,15 @@ const BookFormModal = ({ closeModal }) => {
   const [miniModal, setMiniModal] = useState(null); // 'author' | 'publisher' | 'series' | 'category'
 
   useEffect(() => {
+    // Fetch initial supporting data when the modal opens
     fetchSupportData();
-  }, []);
+  }, [fetchSupportData]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleMultiSelect = (e) => {
     const { name, selectedOptions } = e.target;
+    // Collect all selected values as an array of strings
     const values = Array.from(selectedOptions, (opt) => opt.value);
     setForm({ ...form, [name]: values });
   };
@@ -112,17 +114,37 @@ const BookFormModal = ({ closeModal }) => {
     e.preventDefault();
     setLoading(true);
 
-    const finalForm = {
-      ...form,
-      No_of_Pages: parseInt(form.No_of_Pages) || 0,
-      Publication_Year: form.Publication_Year ? parseInt(form.Publication_Year) : null,
+    // 1. Destructure the IDs for linking from the core form data
+    const { Author_IDs, Category_IDs, ...coreForm } = form;
+
+    // 2. Prepare the core book data payload for the API
+    const bookDataForApi = {
+      ...coreForm,
+      // Convert to numbers or null/0
+      No_of_Pages: parseInt(coreForm.No_of_Pages) || 0,
+      Publication_Year: coreForm.Publication_Year ? parseInt(coreForm.Publication_Year) : null,
+      
+      // Ensure optional single selects are explicitly null if empty string
+      Publisher_ID: coreForm.Publisher_ID || null,
+      Series_ID: coreForm.Series_ID || null,
     };
 
-    const success = await addOrEditBook(finalForm, false, null);
+    // 3. Call the updated store action, passing linking IDs as separate arguments
+    const success = await addOrEditBook(
+      bookDataForApi, 
+      false, 
+      null, 
+      Author_IDs, 
+      Category_IDs
+    );
+
     if (success) {
-      toast.success("Book added successfully!");
+      toast.success("Book added successfully and links processed!");
       closeModal();
-    } else toast.error("Failed to add book.");
+    } else {
+      // The store handles the specific error, just confirm failure here.
+      toast.error("Failed to add book.");
+    }
 
     setLoading(false);
   };
@@ -152,7 +174,7 @@ const BookFormModal = ({ closeModal }) => {
             </h2>
             <button
               onClick={closeModal}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-3xl"
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-3xl transition-colors"
               title="Close"
             >
               &times;
@@ -176,7 +198,7 @@ const BookFormModal = ({ closeModal }) => {
                   value={form.Title}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#A56F6E] outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#A56F6E] outline-none transition duration-150"
                 />
               </div>
 
@@ -195,7 +217,7 @@ const BookFormModal = ({ closeModal }) => {
                   value={form.Author_IDs}
                   onChange={handleMultiSelect}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white h-32 focus:ring-1 focus:ring-[#A56F6E]"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white h-32 focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 >
                   {authors.map((a) => (
                     <option key={a.Author_ID} value={a.Author_ID}>
@@ -222,7 +244,7 @@ const BookFormModal = ({ closeModal }) => {
                   value={form.Category_IDs}
                   onChange={handleMultiSelect}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white h-32 focus:ring-1 focus:ring-[#A56F6E]"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white h-32 focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 >
                   {categories.map((c) => (
                     <option key={c.Category_ID} value={c.Category_ID}>
@@ -245,7 +267,7 @@ const BookFormModal = ({ closeModal }) => {
                   name="Publisher_ID"
                   value={form.Publisher_ID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-1 focus:ring-[#A56F6E]"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 >
                   <option value="">Select Publisher</option>
                   {publishers.map((p) => (
@@ -269,7 +291,7 @@ const BookFormModal = ({ closeModal }) => {
                   name="Series_ID"
                   value={form.Series_ID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-1 focus:ring-[#A56F6E]"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 >
                   <option value="">Select Series</option>
                   {series.map((s) => (
@@ -290,7 +312,7 @@ const BookFormModal = ({ closeModal }) => {
                   name="ISBN_No"
                   value={form.ISBN_No}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 />
               </div>
 
@@ -304,7 +326,7 @@ const BookFormModal = ({ closeModal }) => {
                   name="ISSN_No"
                   value={form.ISSN_No}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 />
               </div>
 
@@ -321,7 +343,7 @@ const BookFormModal = ({ closeModal }) => {
                   placeholder="e.g. 2024"
                   min="1000"
                   max={new Date().getFullYear()}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 />
               </div>
 
@@ -336,12 +358,12 @@ const BookFormModal = ({ closeModal }) => {
                   onChange={handleChange}
                   required
                   min="1"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 />
               </div>
 
               {/* Language */}
-              <div>
+              <div className="col-span-1">
                 <label className="block mb-1 text-gray-700 font-semibold">
                   Language *
                 </label>
@@ -349,14 +371,14 @@ const BookFormModal = ({ closeModal }) => {
                   name="Language"
                   value={form.Language}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 >
                   {["English", "Hindi", "Sanskrit", "Other"].map((lang) => (
                     <option key={lang}>{lang}</option>
                   ))}
                 </select>
               </div>
-
+              
               {/* Summary */}
               <div className="col-span-2">
                 <label className="block mb-1 text-gray-700 font-semibold">
@@ -367,7 +389,7 @@ const BookFormModal = ({ closeModal }) => {
                   rows="4"
                   value={form.Book_Summary}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 resize-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 resize-none focus:ring-1 focus:ring-[#A56F6E] transition duration-150"
                 ></textarea>
               </div>
 
@@ -376,14 +398,14 @@ const BookFormModal = ({ closeModal }) => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-6 py-2 text-sm border border-gray-400 rounded-full text-gray-700 hover:bg-gray-100"
+                  className="px-6 py-2 text-sm border border-gray-400 rounded-full text-gray-700 hover:bg-gray-100 transition duration-150"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-8 py-2 text-sm bg-[#A56F6E] text-white rounded-full shadow-md hover:bg-[#8F5B5A] transition-all disabled:opacity-50"
+                  className="px-8 py-2 text-sm bg-[#A56F6E] text-white rounded-full shadow-md hover:bg-[#8F5B5A] transition-all duration-150 disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save"}
                 </button>

@@ -33,7 +33,7 @@ export async function addBook(req, res, next) {
       Book_Summary, Language, Series_ID, Publisher_ID, Cover_Image)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    await dbquery(sql, [
+     const result  = await dbquery(sql, [
       Title,
       ISBN_No,
       ISSN_No,
@@ -46,7 +46,8 @@ export async function addBook(req, res, next) {
       Cover_Image,
     ]);
 
-    res.json({ message: "Book added successfully" });
+    const newBookId = result.insertId? (result.insertId): ("");
+    res.json({ message: "Book added successfully", Book_ID: newBookId  });
   } catch (err) {
     next(err);
   }

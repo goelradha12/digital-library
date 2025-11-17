@@ -152,10 +152,6 @@ const UserProfile = () => {
                     ? new Date(User.subscription_end_date).toLocaleDateString()
                     : 'N/A'}
                 </p>
-                <p>
-                  <span className="font-semibold text-gray-800">Reward Points:</span>{' '}
-                  {User?.Reward_Points ?? 0}
-                </p>
               </div>
             </div>
           </aside>
