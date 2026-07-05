@@ -213,7 +213,6 @@ DELIMITER ;
 
 -- Publisher_ID
 DELIMITER $$
-
 CREATE TRIGGER  generate_Publisher_ID 
 before insert on Publisher
 For each ROW
@@ -230,7 +229,6 @@ DELIMITER ;
 
 -- Series_ID
 DELIMITER $$
-
 CREATE TRIGGER	generate_Series_ID 
 before insert on Series
 For each ROW
@@ -243,28 +241,16 @@ begin
  END $$
 DELIMITER ;
 
--- book id
-DELIMITER $$
-
-CREATE TRIGGER generate_Book_ID
-BEFORE INSERT ON Book
-FOR EACH ROW
-BEGIN
-    SET NEW.Book_ID = CONCAT('B', LPAD(
-        IFNULL(
-            (SELECT MAX(CAST(SUBSTRING(Book_ID, 2) AS UNSIGNED)) 
-             FROM Book),
-            0
-        ) + 1, 11, '0'
-    ));
-END $$
-
-DELIMITER ;
+-- NOTE: The old standalone "generate_Book_ID" trigger was removed here.
+-- It duplicated the ID-generation logic already performed by
+-- "generate_Book_ID_Accession" below (two BEFORE INSERT triggers on the
+-- same table both recomputing Book_ID is redundant and error-prone).
+-- Book_ID + Accession_No are now generated together in a single trigger
+-- (see generate_Book_ID_Accession further down).
 
 
 -- User_ID
 DELIMITER $$
-
 CREATE TRIGGER generate_User_ID
 BEFORE INSERT On User
 For each row
@@ -278,9 +264,8 @@ begin
 END $$
 DELIMITER ;
 
---notification
+-- Notification
 DELIMITER $$
-
 CREATE TRIGGER generate_welcome_notification
 AFTER INSERT On User
 For each row
@@ -289,8 +274,8 @@ begin
      SET msg = CONCAT("Hello ",
 		(SELECT name FROM Visitor where Visitor_ID=NEW.Visitor_ID),
         ", Welcome to the platform. Feel free to Explore our Library Seeker.");
-     insert into notification(status, description, user_ID) values 
-     ("NOT SEEN",msg,NEW.User_ID);
+     insert into Notification(status, description, user_ID) values 
+     ('not seen',msg,NEW.User_ID);
 END $$
 DELIMITER ;
 
@@ -314,7 +299,7 @@ END $$
 
 DELIMITER ;
 
---Bookmarks
+-- Bookmarks
 
 DELIMITER $$
 
@@ -390,7 +375,7 @@ DELIMITER ;
 
 
     
--- accession no and book ID
+-- accession no and book ID (single trigger now handles both Book_ID and Accession_No)
 DELIMITER $$
 
 CREATE TRIGGER generate_Book_ID_Accession
@@ -437,33 +422,32 @@ END $$
 DELIMITER ;
 
 -- add to accession number as new category is mapped to any book
- DELIMITER $$
-
+DELIMITER $$
 CREATE trigger update_Accession_on_category
- AFTER insert on Book_To_Category 
- FOR each row
- begin
- 	update book a
-     set a.accession_no = CONCAT(SUBSTRING(a.accession_no,1,4),RIGHT(NEW.category_ID,3),RIGHT(a.accession_no,6))
-     where a.Book_ID = NEW.Book_ID;
- end
+AFTER insert on Book_To_Category 
+FOR each row
+begin
+	update Book a
+    set a.accession_no = CONCAT(SUBSTRING(a.accession_no,1,4),RIGHT(NEW.category_ID,3),RIGHT(a.accession_no,6))
+    where a.Book_ID = NEW.Book_ID;
+end$$
 
- $$ DELIMITER ;
+DELIMITER ;
 
  -- Add into accession number as any entry occurs in Book to Author table
- DELIMITER $$
-
+DELIMITER $$
 CREATE trigger update_accession_on_author
- AFTER insert on Book_To_Author
- FOR EACH ROW
- BEGIN
+AFTER insert on Book_To_Author
+FOR EACH ROW
+BEGIN
     UPDATE Book b
     SET Accession_no = concat(SUBSTRING_INDEX(b.Accession_no, ':', 1),
     UPPER((Select SUBSTRING(Author_Name,1,3) from Author where Author_ID = NEW.Author_ID)),
     SUBSTRING_INDEX(b.Accession_no, ':', -1))
     where b.Book_ID = NEW.Book_ID;
- END
- $$ DELIMITER ;
+END$$
+
+DELIMITER ;
 
 
 -- Start a trigger to calculate percentage read whenever there is a insert or update in offline_content table
@@ -515,13 +499,18 @@ END$$
 
 DELIMITER ;
 
-drop trigger trg_offline_content_before_insert;
+-- NOTE: the premature "DROP TRIGGER trg_offline_content_before_insert" that
+-- originally appeared here (before any data was inserted) has been removed.
+-- Dropping it at this point in the script disabled Percentage_Read
+-- calculation for every Offline_Content row inserted later, which defeats
+-- the purpose of the trigger. The insert trigger is intentionally kept
+-- active through the data-loading section below.
 
 show triggers;
 
 
 
--- 100 Visitors visits our DLMS
+-- 100 visitors visits our DLMS
 
 INSERT INTO Visitor (Name, Email, Registration_Date, Password, Avatar, Country) VALUES
 ('Rahul Sharma', 'rahul.sharma@example.com', '2025-04-15', 'Password123!', NULL, 'India'),
@@ -633,7 +622,7 @@ Select * from Visitor;
 
 
 
--- 39 Visitors becomes the user
+-- 39 visitors becomes the user
 
 INSERT INTO User (Start_Date, Reward_Points, Accessibility_Settings, Visitor_ID) VALUES
 ('2025-04-16', 100,'{"Text-to-Speech": "No","Color-Contrast": "7:1","Font-Size": "8","Bold": "2"}', 'VIS000000017'),
@@ -679,8 +668,8 @@ INSERT INTO User (Start_Date, Reward_Points, Accessibility_Settings, Visitor_ID)
 ('2025-04-25', 90, '{"Text-to-Speech": "No","Color-Contrast": "7:1","Font-Size": "8","Bold": "2"}', 'VIS000000007'),
 ('2025-04-25', 90, '{"Text-to-Speech": "No","Color-Contrast": "7:1","Font-Size": "8","Bold": "2"}', 'VIS000000057');
 
-select user_ID, start_Date from user;
-select * from user;
+select user_ID, start_Date from User;
+select * from User;
 
 
 
@@ -730,7 +719,7 @@ INSERT INTO Transaction (Transaction_ID, User_ID, Amount_Paid, Payment_Date, Pay
 ('TRA000000038', 'USE000000038', 600.00, '2025-04-25', 'Credit Card');
 
 
-select * from transaction;
+select * from Transaction;
 
 
 -- Insert Publishers
@@ -744,7 +733,7 @@ INSERT INTO Publisher (Publisher_Name) VALUES
 ('Scholastic Corporation'),
 ('Macmillan Publishers');
 
-select * from publisher;
+select * from Publisher;
 
 -- Insert Series
 INSERT INTO Series (Series_Name, Series_Description) VALUES
@@ -780,7 +769,7 @@ INSERT INTO Category (Category_Name) VALUES
 ('Drama'),
 ('Short Stories'),
 ('Satire');
-select * from category;
+select * from Category;
 
 INSERT INTO Author (Author_ID, Author_Name, Author_Introduction) VALUES
 ('AUT000000001', 'Tolkien, J.R.R.', 'English writer, poet, philologist, and academic, best known for The Lord of the Rings.'),
@@ -806,7 +795,7 @@ INSERT INTO Author (Author_ID, Author_Name, Author_Introduction) VALUES
 ('AUT000000021', 'Bachchan, Harivansh Rai', 'Indian poet noted for his early work Madhushala.');
 
 
-select * from author;
+select * from Author;
 
 
 INSERT INTO Book (Title, ISBN_No, ISSN_No, Publication_Year, Cover_Image, No_of_Pages, Book_Summary, Language, Series_ID, Publisher_ID) 
@@ -853,7 +842,7 @@ VALUES
 ('Madhushala', '9788170286050', NULL, 1935, NULL, 133, 'Poetry collection by Harivansh Rai Bachchan.', 'Hindi', NULL, 'PUB000000007');
 
 
-select * from book;
+select * from Book;
 
 
 INSERT INTO Book_To_Author (Book_ID, Author_ID)
@@ -940,7 +929,7 @@ INSERT INTO Book_To_Category (Book_ID, Category_ID) VALUES
 ('B00000000037', 'CAT000000004'), -- A Thousand Splendid Suns -> Historical Fiction
 ('B00000000038', 'CAT000000006'), -- Shatranj ke Khiladi -> Hindi Literature
 ('B00000000039', 'CAT000000006'), -- Sevasadan -> Hindi Literature
-('B00000000039', 'CAT000000011'); -- Madhushala -> Poetry
+('B00000000040', 'CAT000000011'); -- Madhushala -> Poetry (fixed: was incorrectly B00000000039)
 
 -- delete from Book_To_Category;-- 
 SELECT * FROM Book_To_Category;
@@ -1061,14 +1050,14 @@ INSERT INTO Bookmarks (Bookmark_Note, Page_Number, Bookmark_Date, User_ID, Book_
 ('Foreshadowing of the climax.', 98, '2025-04-18', 'USE000000024', 'B00000000022'),
 ('Nice philosophical discussion.', 142, '2025-04-18', 'USE000000025', 'B00000000023'),
 ('Loved the setting described here.', 34, '2025-04-19', 'USE000000003', 'B00000000002'),
-('Character's backstory explained.', 115, '2025-04-20', 'USE000000004', 'B00000000003'),
+('Character’s backstory explained.', 115, '2025-04-20', 'USE000000004', 'B00000000003'),
 ('Plot hole? Need to think.', 90, '2025-04-20', 'USE000000006', 'B00000000005'),
 ('Insightful monologue.', 56, '2025-04-21', 'USE000000008', 'B00000000007'),
 ('Poetic ending.', 300, '2025-04-22', 'USE000000010', 'B00000000009');
 
 INSERT INTO Bookmarks (Bookmark_Note, Page_Number, Bookmark_Date, User_ID, Book_ID) VALUES
 ('First hint about the villain.', 45, '2025-04-12', 'USE000000013', 'B00000000011'),
-('Villain's plan revealed.', 220, '2025-04-15', 'USE000000013', 'B00000000011'),
+('Villain’s plan revealed.', 220, '2025-04-15', 'USE000000013', 'B00000000011'),
 
 ('Initial philosophy mentioned.', 30, '2025-04-13', 'USE000000014', 'B00000000012'),
 ('Deep discussion on morality.', 130, '2025-04-17', 'USE000000014', 'B00000000012'),
@@ -1097,7 +1086,7 @@ INSERT INTO Reviews (User_ID, Book_ID, Review_Text, Review_Date, Rating) VALUES
 ('USE000000016', 'B00000000014', 'Interesting concept but poor execution.', '2025-04-13', 3),
 ('USE000000017', 'B00000000015', 'Loved the depth of characters and world-building.', '2025-04-13', 5),
 ('USE000000018', 'B00000000016', 'Not my type of book, struggled to finish.', '2025-04-14', 2),
-('USE000000019', 'B00000000017', 'Couldn't put it down! A thrilling masterpiece.', '2025-04-14', 5),
+('USE000000019', 'B00000000017', 'Couldn’t put it down! A thrilling masterpiece.', '2025-04-14', 5),
 ('USE000000020', 'B00000000018', 'A decent book but not memorable.', '2025-04-15', 3),
 ('USE000000021', 'B00000000019', 'Incredible writing. Every page was a delight.', '2025-04-16', 5),
 ('USE000000022', 'B00000000020', 'Confusing at times, needed more clarity.', '2025-04-17', 2),
@@ -1200,7 +1189,7 @@ VALUES
 ('USE000000016', 'B00000000038', 30, '2025-04-08', '2025-04-05'),
 ('USE000000016', 'B00000000039', 35, '2025-04-09', '2025-04-05');
 
-select * from offline_content;
+select * from Offline_Content;
 
 
 INSERT INTO AI_Recommendation (User_ID, Book_ID, Rank_Order, Date) VALUES
@@ -1244,16 +1233,16 @@ INSERT INTO AI_Recommendation (User_ID, Book_ID, Rank_Order, Date) VALUES
 ('USE000000038', 'B00000000038', 2, '2025-05-10');
 
 
-use library_management;
+USE Library_Management;
 
 -- First add a column in User table as subscription_end_date 
 ALTER TABLE User add subscription_end_date date;
  SET SQL_SAFE_UPDATES = 0;
  
 -- Update prev record to follow the logic 
-update User u SET subscription_end_date = (SELECT Payment_Date from transaction t where t.User_ID = u.User_ID);
+update User u SET subscription_end_date = (SELECT Payment_Date from Transaction t where t.User_ID = u.User_ID);
  SET SQL_SAFE_UPDATES = 1;
-select * from user;
+select * from User;
 
 -- A trigger to update user subscription_end_date as soon as any transaction is made.
 
