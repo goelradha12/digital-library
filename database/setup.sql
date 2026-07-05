@@ -241,23 +241,12 @@ begin
  END $$
 DELIMITER ;
 
--- book id
-DELIMITER $$
-
-CREATE TRIGGER generate_Book_ID
-BEFORE INSERT ON Book
-FOR EACH ROW
-BEGIN
-    SET NEW.Book_ID = CONCAT('B', LPAD(
-        IFNULL(
-            (SELECT MAX(CAST(SUBSTRING(Book_ID, 2) AS UNSIGNED)) 
-             FROM Book),
-            0
-        ) + 1, 11, '0'
-    ));
-END $$
-
-DELIMITER ;
+-- NOTE: The old standalone "generate_Book_ID" trigger was removed here.
+-- It duplicated the ID-generation logic already performed by
+-- "generate_Book_ID_Accession" below (two BEFORE INSERT triggers on the
+-- same table both recomputing Book_ID is redundant and error-prone).
+-- Book_ID + Accession_No are now generated together in a single trigger
+-- (see generate_Book_ID_Accession further down).
 
 
 -- User_ID
@@ -275,7 +264,7 @@ begin
 END $$
 DELIMITER ;
 
-–notification
+-- Notification
 DELIMITER $$
 CREATE TRIGGER generate_welcome_notification
 AFTER INSERT On User
@@ -286,7 +275,7 @@ begin
 		(SELECT name FROM Visitor where Visitor_ID=NEW.Visitor_ID),
         ", Welcome to the platform. Feel free to Explore our Library Seeker.");
      insert into notification(status, description, user_ID) values 
-     ("NOT SEEN",msg,NEW.User_ID);
+     ('not seen',msg,NEW.User_ID);
 END $$
 DELIMITER ;
 
@@ -386,7 +375,7 @@ DELIMITER ;
 
 
     
--- accession no and book ID
+-- accession no and book ID (single trigger now handles both Book_ID and Accession_No)
 DELIMITER $$
 
 CREATE TRIGGER generate_Book_ID_Accession
@@ -433,31 +422,32 @@ END $$
 DELIMITER ;
 
 -- add to accession number as new category is mapped to any book
- DELIMITER $$
- CREATE trigger update_Accession_on_category
- AFTER insert on Book_To_Category 
- FOR each row
- begin
- 	update book a
-     set a.accession_no = CONCAT(SUBSTRING(a.accession_no,1,4),RIGHT(NEW.category_ID,3),RIGHT(a.accession_no,6))
-     where a.Book_ID = NEW.Book_ID;
- end
+DELIMITER $$
+CREATE trigger update_Accession_on_category
+AFTER insert on Book_To_Category 
+FOR each row
+begin
+	update book a
+    set a.accession_no = CONCAT(SUBSTRING(a.accession_no,1,4),RIGHT(NEW.category_ID,3),RIGHT(a.accession_no,6))
+    where a.Book_ID = NEW.Book_ID;
+end$$
 
- $$ DELIMITER ;
+DELIMITER ;
 
  -- Add into accession number as any entry occurs in Book to Author table
- DELIMITER $$
- CREATE trigger update_accession_on_author
- AFTER insert on Book_To_Author
- FOR EACH ROW
- BEGIN
+DELIMITER $$
+CREATE trigger update_accession_on_author
+AFTER insert on Book_To_Author
+FOR EACH ROW
+BEGIN
     UPDATE Book b
     SET Accession_no = concat(SUBSTRING_INDEX(b.Accession_no, ':', 1),
     UPPER((Select SUBSTRING(Author_Name,1,3) from Author where Author_ID = NEW.Author_ID)),
     SUBSTRING_INDEX(b.Accession_no, ':', -1))
     where b.Book_ID = NEW.Book_ID;
- END
- $$ DELIMITER ;
+END$$
+
+DELIMITER ;
 
 
 -- Start a trigger to calculate percentage read whenever there is a insert or update in offline_content table
@@ -509,7 +499,12 @@ END$$
 
 DELIMITER ;
 
-drop trigger trg_offline_content_before_insert;
+-- NOTE: the premature "DROP TRIGGER trg_offline_content_before_insert" that
+-- originally appeared here (before any data was inserted) has been removed.
+-- Dropping it at this point in the script disabled Percentage_Read
+-- calculation for every Offline_Content row inserted later, which defeats
+-- the purpose of the trigger. The insert trigger is intentionally kept
+-- active through the data-loading section below.
 
 show triggers;
 
@@ -934,7 +929,7 @@ INSERT INTO Book_To_Category (Book_ID, Category_ID) VALUES
 ('B00000000037', 'CAT000000004'), -- A Thousand Splendid Suns -> Historical Fiction
 ('B00000000038', 'CAT000000006'), -- Shatranj ke Khiladi -> Hindi Literature
 ('B00000000039', 'CAT000000006'), -- Sevasadan -> Hindi Literature
-('B00000000039', 'CAT000000011'); -- Madhushala -> Poetry
+('B00000000040', 'CAT000000011'); -- Madhushala -> Poetry (fixed: was incorrectly B00000000039)
 
 -- delete from Book_To_Category;-- 
 SELECT * FROM Book_To_Category;
@@ -1374,4 +1369,3 @@ BEGIN
 END$$
 
 DELIMITER ;
-
