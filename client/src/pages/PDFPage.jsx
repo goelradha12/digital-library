@@ -15,7 +15,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { useBookStore } from '../stores/book.Stores';
-import BookDetailCard from '../components/bookDetailCard';
+import BookDetailCard from '../components/BookDetailCard';
 import { useAuthStore } from '../stores/auth.Stores';
 import { useDownloadsStore } from '../stores/download.Stores';
 
