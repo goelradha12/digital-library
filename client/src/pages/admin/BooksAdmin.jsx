@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
-import BookFormModal from "../../components/admin/bookFormModal";
+import BookFormModal from "../../components/admin/BookFormModal";
 
 const BooksAdmin = () => {
   const [books, setBooks] = useState([]);
