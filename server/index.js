@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 app.use(
   cors({
-    origin: "https://dlmsfrontend.netlify.app",
+    origin: "https://library.radhagoyal.in",
     credentials: true,
     exposedHeaders: ["X-Total-Pages"],
   }),
