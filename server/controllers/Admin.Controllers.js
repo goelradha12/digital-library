@@ -11,17 +11,29 @@ function hashPassword(password) {
 /** POST /admin/login */
 export async function adminLogin(req, res, next) {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim();
+    const { password } = req.body;
 
-    // Check if email matches the one in .env
-    if (email !== process.env.ADMIN_EMAIL) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // Check email
+    const emailMatches = email === process.env.ADMIN_EMAIL;
 
-    // Hash and compare
+    // Hash password and compare
     const hashed = hashPassword(password);
-    if (hashed !== process.env.ADMIN_HASH) {
-      return res.status(401).json({ message: "Invalid credentials" });
+    const hashMatches = hashed === process.env.ADMIN_HASH;
+
+    // Temporary debugging — does NOT log password or hash
+    console.log({
+      receivedEmail: email,
+      expectedEmail: process.env.ADMIN_EMAIL,
+      emailMatches,
+      passwordProvided: Boolean(password),
+      hashMatches,
+    });
+
+    if (!emailMatches || !hashMatches) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
     }
 
     // Create a signed cookie
